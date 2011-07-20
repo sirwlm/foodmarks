@@ -1,7 +1,22 @@
 {% extends 'base.html' %}
 
-{% block title %}Foodmarks{% endblock %}
+{% block title %}foodmarks{% endblock %}
 
 {% block content %}
-Welcome to Foodmarks!
+<h2>Welcome to Foodmarks!</h2>
+<ul class="recipe-list">
+  {% for recipe in recipes %}
+  <li class="recipe-listing">
+    <div class="date">
+      <span>{{recipe.time_created|date:"d M y"}}</span>
+    </div>
+    <div class="picture">
+    </div>
+    <div class="data">
+      <span><a href="{% url fm.views.recipe recipe.id %}">{{recipe}}</a></span>
+    </div>
+    <div class="total">{{recipe.ribbon_set.count}}</div>
+  </li>
+  {% endfor %}
+</ul> 
 {% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}foodmarks: My Recipes{% endblock %}
+
+{% block content %}
+<ul>
+  {% for ribbon in ribbons %}{% with recipe=ribbon.recipe %}
+  <li>
+    <span>{{ribbon.time_created}}</span>
+    <span><a href="{% url fm.views.recipe recipe.id %}">{{recipe}}</a></span>
+  </li>
+  {% endwith %}{% endfor %}
+</ul> 
+{% endblock %}

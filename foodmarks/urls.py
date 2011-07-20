@@ -7,6 +7,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^add/', 'fm.views.add_recipe'),
+    url(r'^myrecipes/', 'fm.views.my_recipes'),
+    url(r'^recipe/(\d+)/$', 'fm.views.recipe'),                       
     url(r'^$', 'fm.views.index', name='index'),
     # url(r'^foodmarks/', include('foodmarks.foo.urls')),
 

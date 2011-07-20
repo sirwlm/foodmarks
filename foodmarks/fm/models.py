@@ -11,8 +11,21 @@ class Recipe(models.Model):
 
     time_created = models.DateTimeField(auto_now_add=True)
 
-class Tag(models.Model):
+    def __unicode__(self):
+        return self.title
+
+
+class Ribbon(models.Model):
     recipe = models.ForeignKey(Recipe)
     user = models.ForeignKey(User)
+    comments = models.TextField(blank=True, null=True)
+    time_created = models.DateTimeField(auto_now_add=True)
+
+
+class Tag(models.Model):
+    ribbon = models.ForeignKey(Ribbon)
     key = models.CharField(max_length=50)
     value = models.CharField(max_length=50)
+
+
+    

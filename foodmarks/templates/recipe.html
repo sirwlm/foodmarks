@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}foodmarks: {{recipe}}{% endblock %}
+
+{% block content %}
+{% if recipe.link %}
+<a href="{{recipe.link}}"><h2>{{recipe}}</h2></a>
+{% else %}
+<h2>{{recipe}}</h2>
+{% endif %}
+
+<p>{{recipe.description|linebreaks}}</p>
+
+<p>{{recipe.ingredients|linebreaks}}</p>
+
+<p>{{recipe.directions|linebreaks}}</p>
+{% endblock %}
