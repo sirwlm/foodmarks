@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Foodmarks: Login {% endblock %}
+
+{% block content %}
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+<div style="width:250px;margin:auto;text-align:center; margin-top:40px;">
+  <h3>Login to Foodmarks</h3>
+
+  <form action="./" method="post" name="mainform">
+    {% csrf_token %}
+    <table style="padding:3px">
+      <tr><td>{{ form.username.label_tag }}</td><td>{{ form.username }}</td></tr>
+      <tr><td>{{ form.password.label_tag }}</td><td>{{ form.password }}</td></tr>
+    </table>
+  
+    <input type="submit" value="Login" class="button" />
+    <input type="hidden" name="next" value="{{next}}" />
+  </form>
+</div>
+{% endblock %}

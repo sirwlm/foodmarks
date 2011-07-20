@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <title>{% block title %}NO TITLE{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{STATIC_URL}}css/main.css" type="text/css" media="screen" />
+    {% block css %}
+    
+    {% endblock %}
+  </head>
+  <body>
+    <div id="container">
+      <div id="header">
+	<h1><a href="{% url fm.views.index %}">Foodmarks</a></h1>
+
+
+	<div id="login">
+	  {% if user.is_authenticated %}
+	  <ul>
+	    <li>Welcome {{user.first_name}}!</li>
+	    <li><a href="/logout/">Logout</a></li>
+	  </ul>
+	  {% else %}
+	  <ul>
+	    <li><a href="/login/">Login</a></li>
+	  </ul>
+	  {% endif %}
+	</div>
+	{% block header %}
+
+	{% endblock %}
+      </div>
+      <div id="nav">
+	<ul>
+	  <li><a href="{% url fm.views.add_recipe %}">Add Recipe</a></li>
+	  <li><a href="#">View All Recipes</a></li>
+	</ul>
+      </div>
+      <div id="inner-container">
+	<div id="content">
+	  {% block content %}
+	  NO CONTENT
+	  {% endblock %}
+	</div>
+    </div>
+      <div id="footer">
+	<span>Foodmarks &copy; 2011. <a href="mailto:kevin@kevinleung.com">Contact</a>
+      </div>
+    </div>
+
+    {% block js %}
+
+    {% endblock %}
+  </body>
+</html>
