@@ -74,18 +74,19 @@ ul {
     height:50px;
     position:relative;
     border-bottom:1px solid #a0a0a0;
-    padding:5px 0;
+    padding:10px 0 5px;
 }
 .recipe-listing:first-child{
     border-top:1px solid #a0a0a0;
 }
 .recipe-listing .date {
-    display:inline-block;
+    position:absolute;
+    top:13px;
     font-size:12px;
     width:80px;
 }
 .recipe-listing .data {
-    display:inline-block;
+    margin-left:80px;
 }
 .recipe-listing .total {
     background: #a0a0a0;
@@ -93,4 +94,42 @@ ul {
     top:0;
     right:0;
     padding:5px;
+}
+/* -----------------------------------*/
+/* ---------->>> RIBBON LIST <<<-----------*/
+/* -----------------------------------*/
+.ribbon-listing {
+    height:50px;
+    position:relative;
+    border-bottom:1px solid #a0a0a0;
+    padding:10px 0 5px;
+}
+.ribbon-listing:first-child{
+    border-top:1px solid #a0a0a0;
+}
+.ribbon-listing .date {
+    position:absolute;
+    top:13px;
+    font-size:12px;
+    width:80px;
+}
+.ribbon-listing .data {
+    margin-left:80px;
+}
+.ribbon-listing .total {
+    background: #a0a0a0;
+    position:absolute;
+    top:0;
+    right:0;
+    padding:5px;
+}
+/* -----------------------------------*/
+/* ---------->>> TAG EDITOR <<<-----------*/
+/* -----------------------------------*/
+#current-tags li{
+    padding:5px 0;
+}
+.tag{
+    background: #a0a0a0;
+    padding:3px 5px;
 }

@@ -3,11 +3,18 @@
 {% block title %}foodmarks: My Recipes{% endblock %}
 
 {% block content %}
-<ul>
+<ul class="ribbon-list">
   {% for ribbon in ribbons %}{% with recipe=ribbon.recipe %}
-  <li>
-    <span>{{ribbon.time_created}}</span>
-    <span><a href="{% url fm.views.recipe recipe.id %}">{{recipe}}</a></span>
+  <li class="ribbon-listing">
+    <div class="date">
+      <span>{{ribbon.time_created|date:"d M y"}}</span>
+    </div>
+    <div class="picture">
+    </div>
+    <div class="data">
+      <span><a href="{% url fm.views.recipe recipe.id %}">{{recipe}}</a></span>
+    </div>
+    <div class="total">{{recipe.ribbon_set.count}}</div>
   </li>
   {% endwith %}{% endfor %}
 </ul> 

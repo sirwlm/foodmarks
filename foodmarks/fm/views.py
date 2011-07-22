@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -17,6 +18,7 @@ def index(request):
     return render_to_response('index.html', c)
 
 
+@login_required
 def add_recipe(request):
     c = RequestContext(request)
 
@@ -39,6 +41,7 @@ def add_recipe(request):
     return render_to_response('add_recipe.html', c)
 
 
+@login_required
 def my_recipes(request):
     c = RequestContext(request)
     c['ribbons'] = Ribbon.objects.filter( \
