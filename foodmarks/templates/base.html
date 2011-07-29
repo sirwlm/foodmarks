@@ -11,8 +11,6 @@
     <div id="container">
       <div id="header">
 	<h1><a href="{% url fm.views.index %}">foodmarks</a></h1>
-
-
 	<div id="login">
 	  {% if user.is_authenticated %}
 	  <ul>
@@ -33,7 +31,6 @@
 	<ul>
 	  <li><a href="{% url fm.views.add_recipe %}">Add Recipe</a></li>
 	  <li><a href="{% url fm.views.my_recipes %}">My Recipes</a></li>
-	  <li><a href="#">View All Recipes</a></li>
 	</ul>
       </div>
       <div id="inner-container">
@@ -50,6 +47,7 @@
 
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/main.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/tag_editor.js"></script>
     {% block js %}

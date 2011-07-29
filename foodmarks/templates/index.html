@@ -4,9 +4,9 @@
 
 {% block content %}
 <h2>Welcome to Foodmarks!</h2>
-<ul class="recipe-list">
+<ul class="recipe-list listings">
   {% for recipe in recipes %}
-  <li class="recipe-listing">
+  <li class="recipe-listing listing">
     <div class="date">
       <span>{{recipe.time_created|date:"d M y"}}</span>
     </div>

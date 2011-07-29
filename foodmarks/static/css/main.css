@@ -68,27 +68,41 @@ ul {
 }
 
 /* -----------------------------------*/
-/* ---------->>> RECIPE LIST <<<-----------*/
+/* >>> RECIPE/RIBBON LIST SHARED<<<---*/
 /* -----------------------------------*/
-.recipe-listing {
+.listing {
     height:50px;
     position:relative;
     border-bottom:1px solid #a0a0a0;
     padding:10px 0 5px;
 }
-.recipe-listing:first-child{
+.listing:first-child{
     border-top:1px solid #a0a0a0;
 }
-.recipe-listing .date {
+.listing .date {
     position:absolute;
     top:13px;
     font-size:12px;
     width:80px;
 }
-.recipe-listing .data {
+.listing .data {
     margin-left:80px;
 }
-.recipe-listing .total {
+.listing .meta {
+    margin: 5px 0 0 80px;
+    font-size:12px;
+}
+.listing .tags {
+    float:right;
+}
+.listing .tag {
+    background: #a0a0a0;
+    padding: 3px;
+}
+.listing .actions {
+    float:left;
+}
+.listing .total {
     background: #a0a0a0;
     position:absolute;
     top:0;
@@ -96,40 +110,18 @@ ul {
     padding:5px;
 }
 /* -----------------------------------*/
-/* ---------->>> RIBBON LIST <<<-----------*/
+/* ---------->>> RECIPE LIST <<<------*/
 /* -----------------------------------*/
-.ribbon-listing {
-    height:50px;
-    position:relative;
-    border-bottom:1px solid #a0a0a0;
-    padding:10px 0 5px;
-}
-.ribbon-listing:first-child{
-    border-top:1px solid #a0a0a0;
-}
-.ribbon-listing .date {
-    position:absolute;
-    top:13px;
-    font-size:12px;
-    width:80px;
-}
-.ribbon-listing .data {
-    margin-left:80px;
-}
-.ribbon-listing .total {
-    background: #a0a0a0;
-    position:absolute;
-    top:0;
-    right:0;
-    padding:5px;
-}
+
 /* -----------------------------------*/
-/* ---------->>> TAG EDITOR <<<-----------*/
+/* ---------->>> RIBBON LIST <<<------*/
 /* -----------------------------------*/
-#current-tags li{
-    padding:5px 0;
-}
-.tag{
+
+/* -----------------------------------*/
+/* ---------->>> TAG EDITOR <<<-------*/
+/* -----------------------------------*/
+.tag-value{
     background: #a0a0a0;
     padding:3px 5px;
+    margin:0 5px 0 0;
 }

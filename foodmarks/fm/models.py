@@ -21,11 +21,17 @@ class Ribbon(models.Model):
     comments = models.TextField(blank=True, null=True)
     time_created = models.DateTimeField(auto_now_add=True)
 
+    def __unicode__(self):
+        return '{0} Ribbon for {1}'.format(unicode(self.recipe),
+                                           unicode(self.user))
 
 class Tag(models.Model):
     ribbon = models.ForeignKey(Ribbon)
     key = models.CharField(max_length=50)
-    value = models.CharField(max_length=50)
+    originalKey = models.CharField(max_length=50)
+    value = models.CharField(max_length=50, blank=True, null=True)
+    originalValue = models.CharField(max_length=50, blank=True, null=True)
 
-
+    def __unicode__(self):
+        return '{0}: {1}'.format(self.originalKey, self.originalValue)
     

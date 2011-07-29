@@ -9,9 +9,9 @@
 <h2>{{recipe}}</h2>
 {% endif %}
 
-<p>{{recipe.description|linebreaks}}</p>
+<strong>Description</strong><p>{{recipe.description|linebreaks}}</p>
 
-<p>{{recipe.ingredients|linebreaks}}</p>
+<strong>Ingredients</strong><p>{{recipe.ingredients|linebreaks}}</p>
 
-<p>{{recipe.directions|linebreaks}}</p>
+<strong>Directions</strong><p>{{recipe.directions|linebreaks}}</p>
 {% endblock %}

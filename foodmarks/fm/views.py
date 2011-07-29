@@ -3,8 +3,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
+import json
 
+from django.template import RequestContext
 
 from foodmarks.fm.forms import *
 from foodmarks.fm.models import *
@@ -23,13 +24,30 @@ def add_recipe(request):
     c = RequestContext(request)
 
     if request.POST:
+        tags = json.loads(request.POST['tag-json'])
+
         form = RecipeForm(request.POST)
         if form.is_valid():
             recipe = form.save(commit=False)
             recipe.save()
 
-            Ribbon(recipe=recipe, user=request.user).save()
-                            
+            ribbon = Ribbon(recipe=recipe, user=request.user)
+            ribbon.save()
+            
+            for key in tags:
+                for value in tags[key]['values']:
+                    if value == '':
+                        value = None
+                        originalValue = None
+                    else:
+                        originalValue = tags[key]['values'][value]['original']
+                    Tag(ribbon=ribbon,
+                        key=key, 
+                        originalKey=tags[key]['original'],
+                        value=value,
+                        originalValue=originalValue,
+                        ).save()
+
             return redirect(reverse(my_recipes),
                             permanent=True)
         else:
@@ -45,7 +63,8 @@ def add_recipe(request):
 def my_recipes(request):
     c = RequestContext(request)
     c['ribbons'] = Ribbon.objects.filter( \
-        user=request.user).select_related('recipe')
+        user=request.user).select_related( \
+        'recipe').order_by('-time_created')
     return render_to_response('my_recipes.html', c)
 
 
