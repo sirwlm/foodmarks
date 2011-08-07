@@ -120,8 +120,13 @@ ul {
 /* -----------------------------------*/
 /* ---------->>> TAG EDITOR <<<-------*/
 /* -----------------------------------*/
-.tag-value{
+.tag-value {
     background: #a0a0a0;
     padding:3px 5px;
     margin:0 5px 0 0;
+}
+.tag-remove {
+    cursor: pointer;
+    background: #000000;
+    color: #ffffff;
 }
