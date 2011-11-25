@@ -1,0 +1,21 @@
+<ul class="recipe-list listings">
+  {% for recipe in recipes %}
+  <li class="recipe-listing listing">
+    <div class="date">
+      <span>{{recipe.time_created|date:"d M y"}}</span>
+    </div>
+    <div class="picture">
+    </div>
+    <div class="data">
+      <span>
+	{% if recipe.link %}
+	<a href="{{recipe.link}}">{{recipe}}</a> <a class="small-link" href="{% url fm.views.recipe recipe.id %}">View on foodmarks</a>
+	{% else %}
+	<a href="{% url fm.views.recipe recipe.id %}">{{recipe}}</a>
+	{% endif %}
+      </span>
+    </div>
+    <div class="total">{{recipe.ribbon_set.count}}</div>
+  </li>
+  {% endfor %}
+</ul>

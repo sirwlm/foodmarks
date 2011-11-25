@@ -6,3 +6,8 @@ from foodmarks.fm.models import *
 class RecipeForm(ModelForm):
     class Meta:
         model = Recipe
+
+class RibbonForm(ModelForm):
+    class Meta:
+        model = Ribbon
+        exclude = ('recipe', 'user')

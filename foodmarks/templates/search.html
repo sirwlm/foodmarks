@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}foodmarks: Search Recipes{% endblock %}
+
+{% block content %}
+<h2>Search Recipes</h2>
+<form id="searchform" name="searchform" action="{% url fm.views.search_recipes %}" method="get">
+<input id="query-string" name="q" type="text" value="{{q}}" /> <br />
+{% if own_ribbons %}
+<span>Search My Bookmarks</span> | <a id="search-all" href="#">Search All Bookmarks</a>
+{% else %}
+<a id="search-my" href="#">Search My Bookmarks</a> | <span>Search All Bookmarks</span>
+{% endif %}
+<input id="search-all-input" name="all" type="checkbox" value="all" {% if not own_ribbons %}CHECKED{% endif %} style="display:none;" />
+<table id="tag-search-table" cellpadding="0" cellspacing="0">
+{% for row in search_tags %}
+<tr><th>{{row.0}}</th>
+  <td>
+    <ul class="search-value-list">
+      {% for value in row.1 %}
+      <li {% if value.selected %}class="selected"{% endif %}><a class="toggle-tag" href="#">{{value.value}} {{value.count}}</a><input class="tag-search-checkbox" name="tag" type="checkbox" value="{{row.0}}:{{value.value}}" {% if value.selected %}CHECKED{% endif %} /></li>
+      {% endfor %}
+    </ul>
+  </td>
+</tr>
+{% endfor %}
+</table>
+
+</form>
+{% if own_ribbons %}
+{% include "ribbons.html" %}
+{% else %}
+
+{% include "recipe_list.html" %}
+{% endif %}
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+$(document).ready(function(){
+$(".toggle-tag").click(function(){
+var input = $(this).next('input');
+input.prop('checked', !input.prop('checked'));
+$('#searchform').submit();
+return false;
+});
+
+$('#search-all').click(function(){
+$('#search-all-input').prop('checked', true);
+$('#searchform').submit();
+return false;
+});
+
+$('#search-my').click(function(){
+$('#search-all-input').prop('checked', false);
+$('#searchform').submit();
+return false;
+});
+
+});
+</script>
+{% endblock %}

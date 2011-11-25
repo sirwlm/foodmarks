@@ -14,4 +14,9 @@
 <strong>Ingredients</strong><p>{{recipe.ingredients|linebreaks}}</p>
 
 <strong>Directions</strong><p>{{recipe.directions|linebreaks}}</p>
+
+{% if ribbon %}
+<strong>Comments</strong><p>{{ribbon.comments}}</p>
+
+{% endif %}
 {% endblock %}

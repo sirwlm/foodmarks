@@ -4,7 +4,7 @@
 
     <link rel="stylesheet" href="{{STATIC_URL}}css/main.css" type="text/css" media="screen" />
     {% block css %}
-    
+
     {% endblock %}
   </head>
   <body>
@@ -31,7 +31,13 @@
 	<ul>
 	  <li><a href="{% url fm.views.add_recipe %}">Add Recipe</a></li>
 	  <li><a href="{% url fm.views.my_recipes %}">My Recipes</a></li>
+	  <li><a href="{% url fm.views.search_recipes %}">Search Recipes</a></li>
 	</ul>
+	<form id="nav-searchform" name="nav-searchform" action="{% url fm.views.search_recipes %}" method="get">
+	  <label>Search:
+	     <input id="nav-search" name="q" type="text" />
+	  </label>
+	</form>
       </div>
       <div id="inner-container">
 	<div id="content">
@@ -46,7 +52,7 @@
     </div>
 
 
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/main.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/tag_editor.js"></script>

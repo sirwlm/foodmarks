@@ -7,8 +7,10 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^add/', 'fm.views.add_recipe'),
+    url(r'^edit/(\d+)/$', 'fm.views.edit_recipe'),
     url(r'^myrecipes/', 'fm.views.my_recipes'),
-    url(r'^recipe/(\d+)/$', 'fm.views.recipe'),                       
+    url(r'^recipe/(\d+)/$', 'fm.views.recipe'),
+    url(r'^search/$', 'fm.views.search_recipes'),
     url(r'^$', 'fm.views.index', name='index'),
     # url(r'^foodmarks/', include('foodmarks.foo.urls')),
 
@@ -16,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/', 'django.contrib.auth.views.login',
         {'template_name': 'login.html'}),
+
     url(r'^logout/', 'django.contrib.auth.views.logout',
         {'next_page': '/',}),
 )
