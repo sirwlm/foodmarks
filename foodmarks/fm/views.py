@@ -153,7 +153,6 @@ def search_recipes(request):
             ribbons = Ribbon.objects.filter(user=request.user)
 
         c['own_ribbons'] = not all_ribbons
-        print c['own_ribbons']
         selected_tags = request.GET.getlist('tag')
         if selected_tags:
             split_selected_tags = map(lambda s:s.split(':'), selected_tags)
