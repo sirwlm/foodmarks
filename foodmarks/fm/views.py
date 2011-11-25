@@ -22,43 +22,19 @@ def index(request):
 def add_recipe(request):
     c = RequestContext(request)
     c['add'] = True
-    '''
-    c['known_values_to_keys'] = known_values_to_keys
-
-    if request.POST:
-        tags = json.loads(request.POST['tag-json'])
-
-        recipe_form = RecipeForm(request.POST, prefix="re")
-        ribbon_form = RibbonForm(request.POST, prefix="ri")
-        if recipe_form.is_valid() and ribbon_form.is_valid():
-            recipe = recipe_form.save(commit=False)
-            recipe.save()
-
-            ribbon = ribbon_form.save(commit=False)
-            ribbon.recipe = recipe
-            ribbon.user = request.user
-            ribbon.save()
-
-            for key in tags:
-                for value in tags[key]:
-                    if value == '':
-                        value = None
-                    Tag(ribbon=ribbon, key=key, value=value).save()
-
-            return redirect(reverse(my_recipes), permanent=True)
-        else:
-            c['recipe_form'] = recipe_form
-            c['ribbon_form'] = ribbon_form
-            c['tags'] = tags
-            return render_to_response('edit_recipe.html', c)
-    else:
-        c['recipe_form'] = RecipeForm(prefix="re")
-        c['ribbon_form'] = RibbonForm(prefix="ri")
-        '''
     saved = _save_recipe(request, c)
+
     if saved:
         return redirect(reverse(my_recipes), permanent=True)
     else:
+        if request.method == 'GET':
+            url = request.GET.get('url', None)
+            if url:
+                c['recipe_form'].initial['link'] = url
+            title = request.GET.get('title', None)
+            if title:
+                c['recipe_form'].initial['title'] = title
+
         return render_to_response('edit_recipe.html', c)
 
 
@@ -121,8 +97,9 @@ def edit_recipe(request, ribbon_id):
     except ObjectDoesNotExist:
         return redirect(reverse(my_recipes), permanent=True)
 
-    _save_recipe(request, c, ribbon)
-
+    saved = _save_recipe(request, c, ribbon)
+    if saved:
+        c['message'] = 'Recipe successfully saved.'
     return render_to_response('edit_recipe.html', c)
 
 
@@ -231,3 +208,17 @@ def search_recipes(request):
 
 
     return render_to_response('search.html', c)
+
+
+@login_required
+def delete_ribbon(request, ribbon_id):
+    try:
+        ribbon = Ribbon.objects.get(id=ribbon_id, user=request.user)
+    except ObjectDoesNotExist:
+        return HttpResponse('ERROR', mimetype="application/json")
+    recipe = ribbon.recipe
+    ribbon.delete()
+    if not recipe.ribbon_set.exists():
+        recipe.delete();
+    return HttpResponse('OK', mimetype="application/json")
+

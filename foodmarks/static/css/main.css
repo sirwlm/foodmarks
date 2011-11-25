@@ -105,6 +105,9 @@ ul {
     background: #a0a0a0;
     padding: 3px;
 }
+.listing .tag a{
+    color: #000000;
+    }
 .listing .actions {
     float:left;
 }
@@ -147,6 +150,9 @@ ul {
     }
 #tag-search-table td{
     padding-bottom: 10px;
+    }
+.search-value-list {
+    margin-left: 10px;
     }
 .search-value-list li {
     display:inline-block;

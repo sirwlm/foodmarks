@@ -7,6 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^add/', 'fm.views.add_recipe'),
+    url(r'^ribbon/delete/(\d+)/$', 'fm.views.delete_ribbon'),
     url(r'^edit/(\d+)/$', 'fm.views.edit_recipe'),
     url(r'^myrecipes/', 'fm.views.my_recipes'),
     url(r'^recipe/(\d+)/$', 'fm.views.recipe'),

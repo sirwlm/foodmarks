@@ -12,11 +12,11 @@
     <div class="meta">
       <div class="actions">
 	<span><a class="edit" href="{% url fm.views.edit_recipe ribbon.id %}">Edit</a></span> |
-	<span><a class="delete" href="#">Delete</a></span>
+	<span><a class="delete-ribbon" href="{% url fm.views.delete_ribbon ribbon.id %}">Delete</a></span>
       </div>
       <div class="tags">
 	{% for tag in ribbon.tag_set.all %}
-	<span class="tag">{{tag}}</span>
+	<span class="tag"><a href="{% url fm.views.search_recipes %}?tag={{tag.key}}:{{tag.value}}" >{{tag}}</a></span>
 	{% endfor %}
       </div>
     </div>
