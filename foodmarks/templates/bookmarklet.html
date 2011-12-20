@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}foodmarks: Add Recipe Bookmarklet{% endblock %}
+
+{% block content %}
+<p>{{message}}</p>
+<form id="mainform" name="mainform" action="./" method="post">
+  {% csrf_token %}
+  {{recipe_form.errors}}
+  {{ribbon_form.errors}}
+  <table class="half-width">
+    {{recipe_form.as_table}}
+    {{ribbon_form.as_table}}
+  </table>
+  <div class="half-width">
+    <div id="edit-tags">
+      <h3>Tags</h3>
+      <input id="tag-json" name="tag-json" type="hidden" />
+      <table id="current-tags">
+      </table>
+      Tag: <input id="new-value" type="text" />
+      Category: <input id="new-key" type="text" />
+      <ul>
+	<li><strong>A few tips:</strong></li>
+	<li>- try to input everything in the singular, without spaces, and without punctuation</li>
+	<li>- you can directly input a value, and foodmarks will try to match it automatically to a key</li>
+    </div>
+
+    <input id="save-recipe" type="button" value="Save Recipe" />
+
+  </div>
+</form>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  var knownValuesToKeys = {
+  {% for value, key in known_values_to_keys.items %}
+  '{{value}}': '{{key}}'{% if not forloop.last %},{% endif %}
+  {% endfor %}
+  }
+
+  $(document).ready(function(){
+
+  $('#save-recipe').click(function(){
+  document.getElementById('tag-json').value = generateTagJsonString();
+  $('#mainform').submit();
+  });
+
+  {% for key, values in tags.items %}
+  {% for value, value_dict in values.items %}
+  {% if not value_dict.deleted %}
+  {% if value_dict.id %}
+  addTag('{{key}}', '{{value}}', {{value_dict.id}});
+  {% else %}
+  addTag('{{key}}', '{{value}}');
+  {% endif %}
+  {% endif %}
+  {% endfor %}
+  {% endfor %}
+
+  });
+</script>
+{% endblock %}
