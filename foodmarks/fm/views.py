@@ -4,12 +4,25 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q, Count
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
-import json
-
 from django.template import RequestContext
+from django.utils import simplejson
+import json
 
 from foodmarks.fm.forms import *
 from foodmarks.fm.models import *
+
+
+class JsonResponse(HttpResponse):
+    '''
+    this class makes it easier to quickly turn content into json and return it as a response
+    '''
+
+    def __init__(self, content, mimetype="application/json", *args, **kwargs):
+        if content:
+            content = simplejson.dumps(content)
+        else:
+            content = simplejson.dumps({})
+        super(JsonResponse, self).__init__(content, mimetype, *args, **kwargs)
 
 
 def index(request):
@@ -18,8 +31,8 @@ def index(request):
     return render_to_response('index.html', c)
 
 
-@login_required
-def add_recipe(request):
+@login_required(login_url="/login/")
+def bookmarklet(request):
     c = RequestContext(request)
     c['add'] = True
     saved = _save_recipe(request, c)
@@ -35,15 +48,25 @@ def add_recipe(request):
             if title:
                 c['recipe_form'].initial['title'] = title
 
+        return render_to_response('bookmarklet.html', c)
+
+
+@login_required(login_url="/login/")
+def add_recipe(request):
+    c = RequestContext(request)
+    c['add'] = True
+    saved = _save_recipe(request, c)
+
+    if saved:
+        return redirect(reverse(my_recipes), permanent=True)
+    else:
         return render_to_response('edit_recipe.html', c)
 
 
-def _save_recipe(request, c, ribbon=None):
+def _save_recipe(request, c, ribbon=None, recipe=None):
     c['known_values_to_keys'] = known_values_to_keys
-    if ribbon:
+    if ribbon and not recipe:
         recipe = ribbon.recipe
-    else:
-        recipe = None
 
     recipe_form = RecipeForm(request.POST or None, prefix="re",
                              instance=recipe)
@@ -53,6 +76,16 @@ def _save_recipe(request, c, ribbon=None):
     saved = False
     if recipe_form.is_valid() and ribbon_form.is_valid():
         recipe = recipe_form.save(commit=False)
+
+        '''
+        if recipe.link:
+            other = Recipe.objects.filter(link=recipe.link)
+            if other and other.id != recipe.id:
+                recipe = RecipeForm(
+                    request.POST, prefix="re", instance=other).save(
+                    commit=False)
+                    '''
+
         recipe.save()
         ribbon = ribbon_form.save(commit=False)
         ribbon.recipe = recipe
@@ -88,7 +121,7 @@ def _save_recipe(request, c, ribbon=None):
     c['tags'] = tags
     return saved
 
-@login_required
+@login_required(login_url="/login/")
 def edit_recipe(request, ribbon_id):
     c = RequestContext(request)
     c['edit'] = True
@@ -209,7 +242,7 @@ def search_recipes(request):
     return render_to_response('search.html', c)
 
 
-@login_required
+@login_required(login_url="/login/")
 def delete_ribbon(request, ribbon_id):
     try:
         ribbon = Ribbon.objects.get(id=ribbon_id, user=request.user)
@@ -220,4 +253,44 @@ def delete_ribbon(request, ribbon_id):
     if not recipe.ribbon_set.exists():
         recipe.delete();
     return HttpResponse('OK', mimetype="application/json")
+
+
+@login_required(login_url="/login/")
+def recipe_box(request):
+    c = RequestContext(request)
+    c['ribbons'] = Ribbon.objects.filter(
+        user=request.user, is_boxed=True).select_related(
+        'recipe').order_by('-time_created')
+    return render_to_response('recipe_box.html', c)
+
+@login_required(login_url="/login/")
+def action(request):
+    if not request.method == 'POST':
+        return JsonResponse({'status':'OK'})
+    action = request.POST.get('action', None)
+    if action == 'changeBoxStatus':
+        new_status = request.POST.get('newStatus', None) == 'true'
+        recipe_id = request.POST.get('recipeId', None)
+        ribbon_id = request.POST.get('ribbonId', None)
+        if recipe_id:
+            try:
+                recipe = Recipe.objects.get(id=recipe_id)
+            except ObjectDoesNotExist:
+                return JsonResponse({'status': 'FAIL'})
+        else:
+            return JsonResponse({'status': 'FAIL'})
+        try:
+            ribbon = Ribbon.objects.get(id=ribbon_id)
+            if ribbon.recipe != recipe:
+                return JsonResponse({'status': 'FAIL'})
+        except ObjectDoesNotExist:
+            ribbon = Ribbon(recipe=recipe, user=request.user)
+        ribbon.is_boxed = new_status
+        ribbon.save()
+
+        return JsonResponse({'status': 'OK', 'ribbonId': ribbon.id})
+
+    else:
+        return JsonResponse({'status':'OK'})
+
 

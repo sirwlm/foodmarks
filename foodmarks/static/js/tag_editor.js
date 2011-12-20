@@ -94,9 +94,13 @@ $(document).ready(function(){
 		switch(parseInt(e.keyCode)){
 		case 13:
 		    e.preventDefault();
-		    addTag($('#new-key').val(), $('#new-value').val());
-		    $('#new-key').val('');
-		    $('#new-value').val('');
+		    var key = normalize($.trim(escapeHTML($('#new-key').val())));
+		    var value = normalize($.trim(escapeHTML($('#new-value').val())));
+		    if(key != ''){
+			addTag(key, value);
+			$('#new-key').val('');
+			$('#new-value').val('');
+		    }
 		    break;
 		}
 	    });
@@ -115,8 +119,8 @@ $(document).ready(function(){
 			    }
 			}else {
 			    addTag(key, value);
-			    $('#new-key').val('').focus();
-			    $('#new-value').val('');
+			    $('#new-key').val('');
+			    $('#new-value').val('').focus();
 			}
 		    }
 		    break;

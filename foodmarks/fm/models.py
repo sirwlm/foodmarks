@@ -3,17 +3,20 @@ from django.db import models
 
 class Recipe(models.Model):
     title = models.CharField(max_length=200)
+    link = models.URLField(blank=True, null=True, max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
     ingredients = models.TextField(blank=True, null=True)
     directions = models.TextField(blank=True, null=True)
-
-    link = models.URLField(blank=True, null=True, max_length=256)
 
     time_created = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        if self.link == '':
+            self.link = None
+        super(Recipe, self).save(*args, **kwargs)
 
 class Ribbon(models.Model):
     recipe = models.ForeignKey(Recipe)
@@ -22,9 +25,16 @@ class Ribbon(models.Model):
                                 verbose_name="my comments")
     time_created = models.DateTimeField(auto_now_add=True)
 
+    is_boxed = models.BooleanField(default=False)
+    is_used = models.BooleanField(default=False)
+    thumb = models.NullBooleanField(blank=True, null=True)
+
     def __unicode__(self):
         return u'{0} Ribbon for {1}'.format(unicode(self.recipe),
                                            unicode(self.user))
+
+    class Meta:
+        unique_together = ('recipe', 'user',)
 
 class Tag(models.Model):
     ribbon = models.ForeignKey(Ribbon)

@@ -20,6 +20,13 @@ ul {
     padding:0;
     margin:0;
 }
+.hide {
+    display: none;!important
+}
+.half-width {
+    float: left;
+    width: 400px;
+    }
 /* -----------------------------------*/
 /* ---------->>> LAYOUT <<<-----------*/
 /* -----------------------------------*/
@@ -45,6 +52,7 @@ ul {
     font-size:14px;
     padding:5px;
     text-align:center;
+    clear: both;
 }
 /* -----------------------------------*/
 /* ---------->>> ESSENTIALS <<<-----------*/
@@ -60,6 +68,7 @@ ul {
     display:inline-block;
     line-height:30px;
     height:30px;
+    padding-right: 20px;
 }
 #nav li a {
     display:block;
@@ -127,8 +136,19 @@ ul {
 /* -----------------------------------*/
 
 /* -----------------------------------*/
+/* ---------->>> RECIPE EDITOR <<<----*/
+/* -----------------------------------*/
+#save-recipe {
+    float: right;
+    margin-top: 10px;
+}
+
+/* -----------------------------------*/
 /* ---------->>> TAG EDITOR <<<-------*/
 /* -----------------------------------*/
+#edit-tags {
+    padding-left: 20px;
+    }
 .tag-value {
     background: #a0a0a0;
     padding:3px 5px;

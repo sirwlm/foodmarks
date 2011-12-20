@@ -32,6 +32,7 @@
 	  <li><a href="{% url fm.views.add_recipe %}">Add Recipe</a></li>
 	  <li><a href="{% url fm.views.my_recipes %}">My Recipes</a></li>
 	  <li><a href="{% url fm.views.search_recipes %}">Search Recipes</a></li>
+	  <li><a href="{% url fm.views.recipe_box %}">Recipe Box</a></li>
 	</ul>
 	<form id="nav-searchform" name="nav-searchform" action="{% url fm.views.search_recipes %}" method="get">
 	  <label>Search:
@@ -57,11 +58,12 @@
     <script type="text/javascript" src="{{STATIC_URL}}js/main.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/tag_editor.js"></script>
     <script type="text/javascript">
+      var csrfToken = '{{ csrf_token }}';
       $(".delete-ribbon").click(function(){
       var agree = confirm('Are you sure you want to delete this bookmark? If no one else has bookmarked it, the recipe will also be deleted.');
       if(agree){
       $.post($(this).attr('href'),
-      {'csrfmiddlewaretoken': '{{ csrf_token }}'}, function(data){
+      {'csrfmiddlewaretoken': csrfToken}, function(data){
       $(this).closest('.listing').slideUp();
       });
       }

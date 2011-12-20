@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Foodmarks: {% if add %}Add Recipe{% else %}Edit {{recipe.title}}{% endif %}{% endblock %}
+{% block title %}foodmarks: {% if add %}Add Recipe{% else %}Edit {{recipe.title}}{% endif %}{% endblock %}
 
 {% block content %}
 <h2>{% if add %}Add Recipe{% else %}Edit {{recipe.title}}{% endif %}</h2>
@@ -9,27 +9,27 @@
   {% csrf_token %}
   {{recipe_form.errors}}
   {{ribbon_form.errors}}
-  <table>
+  <table class="half-width">
     {{recipe_form.as_table}}
     {{ribbon_form.as_table}}
-
-    <tr><th>Tags</th>
-      <td><div id="edit-tags">
-	  <input id="tag-json" name="tag-json" type="hidden" />
-	  <table id="current-tags">
-	  </table>
-	  Key: <input id="new-key" type="text" />
-	  Value: <input id="new-value" type="text" />
-	  <ul>
-	    <li><strong>A few tips:</strong></li>
-	    <li>- try to input everything in the singular, without spaces, and without punctuation</li>
-	    <li>- you can directly input a value, and foodmarks will try to match it automatically to a key</li>
-	</div>
-    </td></tr>
-
-    <tr><td><input id="save-recipe" type="button" value="Save Recipe" /></td></tr>
-
   </table>
+  <div class="half-width">
+    <div id="edit-tags">
+      <h3>Tags</h3>
+      <input id="tag-json" name="tag-json" type="hidden" />
+      <table id="current-tags">
+      </table>
+      Tag: <input id="new-value" type="text" />
+      Category: <input id="new-key" type="text" />
+      <ul>
+	<li><strong>A few tips:</strong></li>
+	<li>- try to input everything in the singular, without spaces, and without punctuation</li>
+	<li>- you can directly input a value, and foodmarks will try to match it automatically to a key</li>
+    </div>
+
+    <input id="save-recipe" type="button" value="Save Recipe" />
+
+  </div>
 </form>
 {% endblock %}
 
