@@ -90,6 +90,8 @@ function addTag(key, value, id){
 }
 
 $(document).ready(function(){
+	$('#tag-loader').hide();
+
 	$('#new-key').keydown(function(e){
 		switch(parseInt(e.keyCode)){
 		case 13:
@@ -114,9 +116,13 @@ $(document).ready(function(){
 
 		    if(value != ''){
 			if(key == ''){
-			    if(value in knownValuesToKeys){
-				$('#new-key').val(knownValuesToKeys[value]);
-			    }
+			    $('#tag-loader').show();
+			    $.get('/tag/category', {'value': value},
+				  function(data){
+				      if(data['status'] == 'OK' && data['categories'].length != 0)
+					  $('#new-key').val(data['categories'][0]);
+				      $('#tag-loader').hide();
+				  });
 			}else {
 			    addTag(key, value);
 			    $('#new-key').val('');

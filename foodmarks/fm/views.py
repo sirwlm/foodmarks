@@ -6,11 +6,15 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.utils import simplejson
-import json
 
+import json
+import math
+
+from foodmarks.fm.constants import *
 from foodmarks.fm.forms import *
 from foodmarks.fm.models import *
 
+PAGE_SIZE = 10
 
 class JsonResponse(HttpResponse):
     '''
@@ -27,7 +31,7 @@ class JsonResponse(HttpResponse):
 
 def index(request):
     c = RequestContext(request)
-    c['recipes'] = Recipe.objects.order_by('-time_created')[0:10]
+    c['recipes'] = Recipe.objects.order_by('-time_created')[0:PAGE_SIZE]
     return render_to_response('index.html', c)
 
 
@@ -139,9 +143,19 @@ def edit_recipe(request, ribbon_id):
 @login_required(login_url="/login/")
 def my_recipes(request):
     c = RequestContext(request)
-    c['ribbons'] = Ribbon.objects.filter( \
-        user=request.user).select_related( \
-        'recipe').order_by('-time_created')
+    if request.method == 'GET':
+        page = int(request.GET.get('page', 1))
+    else:
+        page = 1
+    c['ribbons'] = Ribbon.objects.filter(
+        user=request.user)[(page - 1) * PAGE_SIZE: page * PAGE_SIZE
+                           ].select_related('recipe')
+
+    c['num_pages'] = int(math.ceil(
+            Ribbon.objects.filter(user=request.user).count() / 10.0))
+    c['page_range'] = xrange(1, c['num_pages'] + 1)
+    c['page'] = page
+
     return render_to_response('my_recipes.html', c)
 
 
@@ -195,7 +209,7 @@ def search_recipes(request):
 
         c['ribbons'] = ribbons
 
-        tags = Tag.objects.filter(ribbon__in=ribbons).values('key', 'value').annotate(count=Count('value')).order_by('-count')
+        tags = Tag.objects.filter(ribbon__in=ribbons).values('key', 'value').annotate(count=Count('value')).order_by('value')
         tag_map = {}
         priority = 0
         for tag in tags:
@@ -293,4 +307,29 @@ def action(request):
     else:
         return JsonResponse({'status':'OK'})
 
+@login_required(login_url="/login/")
+def get_tag_category(request):
+    if not request.method == 'GET':
+        return JsonResponse({'status': 'OK'})
+    value = request.GET.get('value', None)
+    if not value:
+        return JsonResponse({'status': 'OK', 'categories': ['']})
+    seen_categories = set()
+    categories = []
 
+    users_tags = Tag.objects.filter(value=value, ribbon__user=request.user).values('key').annotate(count=Count('key')).order_by('-count')
+    for tag in users_tags:
+        categories.append(tag['key'])
+        seen_categories.add(tag['key'])
+
+    known_key = known_values_to_keys.get(value, None)
+    if not known_key in seen_categories:
+        categories.append(known_key)
+        seen_categories.add(known_key)
+
+    other_tags = Tag.objects.filter(value=value).values('key').annotate(count=Count('key')).order_by('-count')
+    for tag in other_tags:
+        categories.append(tag['key'])
+        seen_categories.add(tag['key'])
+
+    return JsonResponse({'status': 'OK', 'categories': categories})

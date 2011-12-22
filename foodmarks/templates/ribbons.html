@@ -9,7 +9,7 @@
     <div class="data">
       <span>
 	{% if recipe.link %}
-	<a href="{{recipe.link}}">{{recipe}}</a> <a class="small-link" href="{% url fm.views.recipe recipe.id %}">View on foodmarks</a>
+	<a href="{{recipe.link}}" target="_blank">{{recipe}}</a> <a class="small-link" href="{% url fm.views.recipe recipe.id %}">View on foodmarks</a>
 	{% else %}
 	<a href="{% url fm.views.recipe recipe.id %}">{{recipe}}</a>
 	{% endif %}
@@ -19,7 +19,7 @@
       <div class="actions">
 	<input type="hidden" class="recipe-id" value="{{recipe.id}}" />
 	<input type="hidden" class="ribbon-id" value="{{ribbon.id}}" />
-	<span><a class="add-to-box {% if ribbon.is_current %}hide{% endif %}" href="#">Add To Recipe Box</a><a class="remove-from-box {% if not ribbon.is_current %}hide{% endif %}" href="#">Remove From Recipe Box</a></span> |
+	<span><a class="add-to-box {% if ribbon.is_boxed %}hide{% endif %}" href="#">Add To Recipe Box</a><a class="remove-from-box {% if not ribbon.is_boxed %}hide{% endif %}" href="#">Remove From Recipe Box</a></span> |
 	<span><a class="edit" href="{% url fm.views.edit_recipe ribbon.id %}">Edit</a></span> |
 	<span><a class="delete-ribbon" href="{% url fm.views.delete_ribbon ribbon.id %}">Delete</a></span>
       </div>

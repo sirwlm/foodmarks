@@ -25,7 +25,7 @@ ul {
 }
 .half-width {
     float: left;
-    width: 400px;
+    width: 440px;
     }
 /* -----------------------------------*/
 /* ---------->>> LAYOUT <<<-----------*/
@@ -127,6 +127,15 @@ ul {
     right:0;
     padding:5px;
 }
+/* PAGINATION */
+#pagination {
+    text-align: center;
+    clear: both;
+    margin: 10px 0 15px;
+    }
+#pagination a, #pagination span {
+    padding: 0 2px;
+    }
 /* -----------------------------------*/
 /* ---------->>> RECIPE LIST <<<------*/
 /* -----------------------------------*/
@@ -158,6 +167,9 @@ ul {
     cursor: pointer;
     background: #000000;
     color: #ffffff;
+}
+#tag-loader {
+    display: inline;
 }
 /* -----------------------------------*/
 /* ---------->>> SEARCH INTERFACE <<<-------*/

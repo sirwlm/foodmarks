@@ -15,6 +15,7 @@ urlpatterns = patterns(
     url(r'^recipe/(\d+)/$', 'fm.views.recipe'),
     url(r'^ribbon/delete/(\d+)/$', 'fm.views.delete_ribbon'),
     url(r'^search/$', 'fm.views.search_recipes'),
+    url(r'^tag/category/$', 'fm.views.get_tag_category'),
     url(r'^$', 'fm.views.index', name='index'),
     # url(r'^foodmarks/', include('foodmarks.foo.urls')),
 

@@ -5,4 +5,16 @@
 {% block content %}
 <h2>My Recipes</h2>
 {% include "ribbons.html" %}
+<div id="pagination">
+  {% if page != 1 %}
+  <a href="{% url fm.views.my_recipes %}?page={{page|add:'-1'}}">Prev</a>
+  {% endif %}
+  {% for p in page_range %}
+  {% if p == page %}<span>{{p}}</span>
+  {% else %}<a href="{% url fm.views.my_recipes %}?page={{p}}">{{p}}</a>{% endif %}
+  {% endfor %}
+  {% if page != num_pages %}
+  <a href="{% url fm.views.my_recipes %}?page={{page|add:'1'}}">Next</a>
+  {% endif %}
+</div>
 {% endblock %}
