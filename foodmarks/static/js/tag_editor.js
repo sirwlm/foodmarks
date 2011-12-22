@@ -117,7 +117,7 @@ $(document).ready(function(){
 		    if(value != ''){
 			if(key == ''){
 			    $('#tag-loader').show();
-			    $.get('/tag/category', {'value': value},
+			    $.get('/tag/category/', {'value': value},
 				  function(data){
 				      if(data['status'] == 'OK' && data['categories'].length != 0)
 					  $('#new-key').val(data['categories'][0]);
