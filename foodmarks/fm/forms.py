@@ -8,7 +8,7 @@ class RecipeForm(ModelForm):
         max_length=200,
         widget=forms.TextInput(attrs={'size': '50'}))
     link = forms.URLField(
-        max_length=256, verify_exists=True,
+        max_length=256, verify_exists=True, required=False,
         widget=forms.TextInput(attrs={'size': '50'}))
     class Meta:
         model = Recipe
