@@ -9,18 +9,29 @@
   {% csrf_token %}
   {{recipe_form.errors}}
   {{ribbon_form.errors}}
-  <table class="half-width">
+  <table class="left-width">
     {{recipe_form.as_table}}
     {{ribbon_form.as_table}}
+    {% if user.is_staff %}
+    <tr><th>Add ribbon as:</th>
+      <td>
+	<select name="user">
+	  {% for user in users %}
+	  <option value="{{user.id}}" {% if user.id == user_id %}SELECTED{% endif %}>{{user}}</option>
+	  {% endfor %}
+	</select>
+      </td>
+    </tr>
+    {% endif %}
   </table>
-  <div class="half-width">
+  <div class="right-width">
     <div id="edit-tags">
       <h3>Tags</h3>
       <input id="tag-json" name="tag-json" type="hidden" />
       <table id="current-tags">
       </table>
-      Tag: <input id="new-value" type="text" />
-      Category: <input id="new-key" type="text" />
+      Tag: <input id="new-value" type="text"/>
+      Category: <input id="new-key" type="text"/>
       <img id="tag-loader" class="loader hide" src="{{STATIC_URL}}/images/loader.gif" />
       <ul>
 	<li><strong>A few tips:</strong></li>

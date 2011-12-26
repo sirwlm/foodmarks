@@ -27,6 +27,14 @@ ul {
     float: left;
     width: 440px;
     }
+.left-width {
+    float: left;
+    width: 640px;
+    }
+.right-width {
+    float: left;
+    width: 320px;
+    }
 /* -----------------------------------*/
 /* ---------->>> LAYOUT <<<-----------*/
 /* -----------------------------------*/
@@ -34,7 +42,8 @@ ul {
     width:960px;
     margin:0 auto;}
 #inner-container {
-    padding:5px;
+    clear: both;
+    padding-bottom: 10px;
 }
 #header {
     background:#eeeeee;
@@ -156,7 +165,6 @@ ul {
 /* ---------->>> TAG EDITOR <<<-------*/
 /* -----------------------------------*/
 #edit-tags {
-    padding-left: 20px;
     }
 .tag-value {
     background: #a0a0a0;
@@ -171,6 +179,12 @@ ul {
 #tag-loader {
     display: inline;
 }
+#new-value {
+    width: 100px;
+    }
+#new-key {
+    width: 100px;
+    }
 /* -----------------------------------*/
 /* ---------->>> SEARCH INTERFACE <<<-------*/
 /* -----------------------------------*/

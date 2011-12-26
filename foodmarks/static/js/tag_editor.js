@@ -101,7 +101,7 @@ $(document).ready(function(){
 		    if(key != ''){
 			addTag(key, value);
 			$('#new-key').val('');
-			$('#new-value').val('');
+			$('#new-value').val('').focus();
 		    }
 		    break;
 		}

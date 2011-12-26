@@ -20,6 +20,10 @@ class Recipe(models.Model):
             self.link = None
         super(Recipe, self).save(*args, **kwargs)
 
+    class Meta:
+        ordering = ['-time_created']
+
+
 class Ribbon(models.Model):
     recipe = models.ForeignKey(Recipe)
     user = models.ForeignKey(User)

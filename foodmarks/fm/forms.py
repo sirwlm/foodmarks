@@ -17,5 +17,5 @@ class RecipeForm(ModelForm):
 class RibbonForm(ModelForm):
     class Meta:
         model = Ribbon
-        exclude = ('recipe', 'user', 'is_boxed', 'is_used', 'thumb', )
+        exclude = ('recipe', 'user', )
 

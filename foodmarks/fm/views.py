@@ -68,6 +68,17 @@ def add_recipe(request):
 
 
 def _save_recipe(request, c, ribbon=None, recipe=None):
+    if request.user.is_staff:
+        c['users'] = User.objects.all()
+        c['user_id'] = request.user.id
+        specified_user = request.user
+        if request.POST:
+            c['user_id'] = request.POST.get('user', request.user.id)
+            try:
+                specified_user = User.objects.get(id=c['user_id'])
+            except ObjectDoesNotExist:
+                pass
+
     c['known_values_to_keys'] = known_values_to_keys
     if ribbon and not recipe:
         recipe = ribbon.recipe
@@ -93,7 +104,10 @@ def _save_recipe(request, c, ribbon=None, recipe=None):
         recipe.save()
         ribbon = ribbon_form.save(commit=False)
         ribbon.recipe = recipe
-        ribbon.user = request.user
+        if request.user.is_staff:
+            ribbon.user = specified_user
+        else:
+            ribbon.user = request.user
         ribbon.save()
 
         if request.POST:
@@ -199,6 +213,17 @@ def search_recipes(request):
         else:
             ribbons = Ribbon.objects.filter(user=request.user)
 
+        query_string = request.GET.get('q', '')
+        if query_string != '':
+            recipe_match_q = Q()
+
+            query_tokens = query_string.split(' ')
+            for token in query_tokens:
+                if token:
+                    recipe_match_q |= Q(recipe__title__icontains=token)
+            c['q'] = query_string
+            ribbons = ribbons.filter(recipe_match_q)
+
         c['own_ribbons'] = not all_ribbons
         selected_tags = request.GET.getlist('tag')
         if selected_tags:
@@ -228,24 +253,6 @@ def search_recipes(request):
         '''
                 tag_map[split_selected_tag[0]][split_selected_tag[1]]['selected'] = True
                 '''
-        '''
-        query_string = request.GET.get('q', '')
-        if query_string != '':
-
-            recipe_match_q = Q()
-            ribbon_match_q = Q()
-
-            query_tokens = query_string.split(' ')
-            for token in tokens:
-                recipe_match_q |= Q(title__icontains=token) | \
-                    Q(description__icontains=token) | \
-                    Q(ingredients__icontains=token) | \
-                    Q(directions__icontains=token) | \
-                    Q(link__icontains=token)
-                if request.user.is_authenticated:
-                    ribbon_match_q = Q(ribbon__comments__icontains=token,
-                                       ribbon__user=request.user)
-                                       '''
     tags_ordered = []
     for key, values in tag_map.items():
         tags_ordered.append((key, sorted(values.values(),
@@ -323,13 +330,14 @@ def get_tag_category(request):
         seen_categories.add(tag['key'])
 
     known_key = known_values_to_keys.get(value, None)
-    if not known_key in seen_categories:
+    if known_key and not known_key in seen_categories:
         categories.append(known_key)
         seen_categories.add(known_key)
 
     other_tags = Tag.objects.filter(value=value).values('key').annotate(count=Count('key')).order_by('-count')
     for tag in other_tags:
-        categories.append(tag['key'])
-        seen_categories.add(tag['key'])
+        if not tag['key'] in seen_categories:
+            categories.append(tag['key'])
+            seen_categories.add(tag['key'])
 
     return JsonResponse({'status': 'OK', 'categories': categories})

@@ -8,7 +8,7 @@
 {% else %}
 <h2>{{recipe}}</h2>
 {% endif %}
-
+<div class="left-width">
 <strong>Description</strong><p>{{recipe.description|linebreaks}}</p>
 
 <strong>Ingredients</strong><p>{{recipe.ingredients|linebreaks}}</p>
@@ -17,6 +17,14 @@
 
 {% if ribbon %}
 <strong>Comments</strong><p>{{ribbon.comments}}</p>
-
 {% endif %}
+</div>
+<div class="right-width">
+<p>Bookmarked by:</p>
+<ul>
+  {% for cur_ribbon in recipe.ribbon_set.all %}
+  <li>{{cur_ribbon.user}}</li>
+  {% endfor %}
+</ul>
+</div>
 {% endblock %}
