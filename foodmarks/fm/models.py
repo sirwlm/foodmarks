@@ -12,6 +12,26 @@ class Recipe(models.Model):
 
     time_created = models.DateTimeField(auto_now_add=True)
 
+    def get_tag_dict(self, user=None):
+        if user is not None:
+            try:
+                ribbon = Ribbon.objects.get(recipe=self, user=user)
+                return ribbon.get_tag_dict()
+            except ObjectDoesNotExist:
+                return {}
+        if getattr(self, '_tag_dict', None) is None:
+            tags = Tag.objects.filter(ribbon__recipe=self)
+            tag_dict = {}
+            for tag in tags:
+                if not tag.key in tag_dict:
+                    tag_dict[tag.key] = [tag.value]
+                else:
+                    tag_dict[tag.key].append(tag.value)
+            for value in tag_dict.itervalues():
+                value.sort()
+            self._tag_dict = tag_dict
+        return self._tag_dict
+
     def __unicode__(self):
         return self.title
 
@@ -34,6 +54,20 @@ class Ribbon(models.Model):
     is_boxed = models.BooleanField(default=False)
     is_used = models.BooleanField(default=False)
     thumb = models.NullBooleanField(blank=True, null=True)
+
+    def get_tag_dict(self):
+        if getattr(self, '_tag_dict', None) is None:
+            tags = self.tag_set.all()
+            tag_dict = {}
+            for tag in tags:
+                if not tag.key in tag_dict:
+                    tag_dict[tag.key] = [tag.value]
+                else:
+                    tag_dict[tag.key].append(tag.value)
+            for value in tag_dict.itervalues():
+                value.sort()
+            self._tag_dict = tag_dict
+        return self._tag_dict
 
     def __unicode__(self):
         return u'{0} Ribbon for {1}'.format(unicode(self.recipe),

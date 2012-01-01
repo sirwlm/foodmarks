@@ -15,7 +15,27 @@
 
   {% if ribbon %}
   <strong>Comments</strong>{{ribbon.comments|default:''|linebreaks}}
+  <strong>My Tags</strong>
+  <table>
+    {% for key, values in ribbon.get_tag_dict.items %}
+    <tr><td class="key">{{key}}</td>
+      <td>{% for value in values %}
+      <span class="tag-value" title="{{value}}">{{value}}</span>
+      {% endfor %}</td>
+    </tr>
+    {% endfor %}
+  </table>
   {% endif %}
+  <strong>All Tags</strong>
+  <table>
+    {% for key, values in recipe.get_tag_dict.items %}
+    <tr><td class="key">{{key}}</td>
+      <td>{% for value in values %}
+      <span class="tag-value" title="{{value}}">{{value}}</span>
+      {% endfor %}</td>
+    </tr>
+    {% endfor %}
+  </table>
 </div>
 <div class="right-width">
 

@@ -1,3 +1,4 @@
+{% spaceless %}
 <html>
   <head>
     <title>{% block title %}{% endblock %}{{flatpage.title}}</title>
@@ -49,7 +50,7 @@
 	</div>
     </div>
       <div id="footer">
-	<span>foodmarks &copy; 2011-2012. <a href="mailto:kevin@kevinleung.com">Contact</a> | <a href="/about/">About Us</a>
+	<span>foodmarks &copy; 2011-2012. <a href="/about/">About Us</a> | <a href="/contact/">Contact</a>
       </div>
     </div>
 
@@ -66,3 +67,4 @@
     {% endblock %}
   </body>
 </html>
+{% endspaceless %}

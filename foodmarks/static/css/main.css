@@ -27,16 +27,25 @@ ul {
     display: none;!important
 }
 .half-width {
-    float: left;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align: top;
     width: 440px;
     margin-right: 20px;
     }
 .left-width {
-    float: left;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align: top;
     width: 640px;
     }
 .right-width {
-    float: left;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align: top;
     width: 320px;
     }
 /* -----------------------------------*/
@@ -106,6 +115,9 @@ ul {
 .listing:first-child{
     border-top:1px solid #a0a0a0;
 }
+.listing .title {
+    margin-right: 4px;
+    }
 .listing .small-link {
     font-size: 10px;
     }
@@ -128,6 +140,7 @@ ul {
 .listing .tag {
     background: #a0a0a0;
     padding: 3px;
+    margin: 0 0 0 2px;
 }
 .listing .tag a{
     color: #000000;
@@ -208,6 +221,7 @@ ul {
     }
 .search-value-list li {
     display:inline-block;
+    margin: 0 2px 2px 0;
 }
 .search-value-list li a{
     display:inline-block;
