@@ -41,7 +41,7 @@ def bookmarklet(request):
     ctx['add'] = True
 
     recipe = None
-    saved = _save_recipe(request, c, recipe=recipe)
+    saved = _save_recipe(request, ctx, recipe=recipe)
 
     if saved:
         return redirect(reverse(my_recipes), permanent=True)
@@ -63,7 +63,7 @@ def add_recipe(request):
             except ObjectDoesNotExist:
                 pass
 
-    saved = _save_recipe(request, c, recipe=recipe)
+    saved = _save_recipe(request, ctx, recipe=recipe)
 
     if saved:
         return redirect(reverse(my_recipes), permanent=True)
@@ -71,7 +71,7 @@ def add_recipe(request):
         return render_to_response('edit_recipe.html', ctx)
 
 
-def _save_recipe(request, c, ribbon=None, recipe=None):
+def _save_recipe(request, ctx, ribbon=None, recipe=None):
     if request.method == 'GET' and not recipe:
         url = request.GET.get('url', None)
         title = request.GET.get('title', None)
@@ -199,7 +199,7 @@ def edit_recipe(request, ribbon_id):
     except ObjectDoesNotExist:
         return redirect(reverse(my_recipes), permanent=True)
 
-    saved = _save_recipe(request, c, ribbon)
+    saved = _save_recipe(request, ctx, ribbon)
     if saved:
         ctx['message'] = 'Recipe successfully saved.'
     return render_to_response('edit_recipe.html', ctx)
