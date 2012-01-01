@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Count
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.utils import simplejson
@@ -35,31 +35,35 @@ def index(request):
     return render_to_response('index.html', c)
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="/accounts/login/")
 def bookmarklet(request):
     c = RequestContext(request)
     c['add'] = True
-    saved = _save_recipe(request, c)
+
+    recipe = None
+    saved = _save_recipe(request, c, recipe=recipe)
 
     if saved:
         return redirect(reverse(my_recipes), permanent=True)
-    else:
-        if request.method == 'GET':
-            url = request.GET.get('url', None)
-            if url:
-                c['recipe_form'].initial['link'] = url
-            title = request.GET.get('title', None)
-            if title:
-                c['recipe_form'].initial['title'] = title
 
-        return render_to_response('bookmarklet.html', c)
+    return render_to_response('bookmarklet.html', c)
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="/accounts/login/")
 def add_recipe(request):
     c = RequestContext(request)
     c['add'] = True
-    saved = _save_recipe(request, c)
+
+    recipe = None
+    if request.method == 'GET':
+        recipe_id = request.GET.get('recipe', None)
+        if recipe_id is not None:
+            try:
+                recipe = Recipe.objects.get(id=recipe_id)
+            except ObjectDoesNotExist:
+                pass
+
+    saved = _save_recipe(request, c, recipe=recipe)
 
     if saved:
         return redirect(reverse(my_recipes), permanent=True)
@@ -68,12 +72,21 @@ def add_recipe(request):
 
 
 def _save_recipe(request, c, ribbon=None, recipe=None):
+    if request.method == 'GET' and not recipe:
+        url = request.GET.get('url', None)
+        title = request.GET.get('title', None)
+        if url:
+            try:
+                recipe = Recipe.objects.get(link=url)
+            except ObjectDoesNotExist:
+                pass
+
     if request.user.is_staff:
         c['users'] = User.objects.all()
         c['user_id'] = request.user.id
         specified_user = request.user
         if request.POST:
-            c['user_id'] = request.POST.get('user', request.user.id)
+            c['user_id'] = int(request.POST.get('user', request.user.id))
             try:
                 specified_user = User.objects.get(id=c['user_id'])
             except ObjectDoesNotExist:
@@ -82,6 +95,27 @@ def _save_recipe(request, c, ribbon=None, recipe=None):
     c['known_values_to_keys'] = known_values_to_keys
     if ribbon and not recipe:
         recipe = ribbon.recipe
+
+    if not recipe and request.method == 'POST':
+        recipe_id = request.POST.get('recipe-id', None)
+        if recipe_id:
+            try:
+                recipe = Recipe.objects.get(id=recipe_id)
+            except ObjectDoesNotExist:
+                pass
+        else:
+            link = request.POST.get('re-link', None)
+            if link:
+                try:
+                    recipe = Recipe.objects.get(link=link)
+                except ObjectDoesNotExist:
+                    pass
+
+    if recipe and not ribbon:
+        try:
+            ribbon = Ribbon.objects.get(recipe=recipe, user=request.user)
+        except ObjectDoesNotExist:
+            pass
 
     recipe_form = RecipeForm(request.POST or None, prefix="re",
                              instance=recipe)
@@ -132,14 +166,31 @@ def _save_recipe(request, c, ribbon=None, recipe=None):
                     tags[actual_tag.key] = {}
                 tags[actual_tag.key][actual_tag.value] = \
                     {'id': actual_tag.id}
+        elif recipe and request.user.get_profile().copy_tags:
+            actual_tags = Tag.objects.filter(ribbon__recipe=recipe)
+            for actual_tag in actual_tags:
+                if not actual_tag.key in tags:
+                    tags[actual_tag.key] = {}
+                tags[actual_tag.key][actual_tag.value] = {}
+
     c['recipe_form'] = recipe_form
     c['ribbon_form'] = ribbon_form
     c['ribbon'] = ribbon
     c['recipe'] = recipe
     c['tags'] = tags
+
+    if request.method == 'GET':
+        url = request.GET.get('url', None)
+        title = request.GET.get('title', None)
+        if not recipe:
+            if url:
+                c['recipe_form'].initial['link'] = url
+            if title:
+                c['recipe_form'].initial['title'] = title
+
     return saved
 
-@login_required(login_url="/login/")
+@login_required(login_url="/accounts/login/")
 def edit_recipe(request, ribbon_id):
     c = RequestContext(request)
     c['edit'] = True
@@ -154,7 +205,7 @@ def edit_recipe(request, ribbon_id):
     return render_to_response('edit_recipe.html', c)
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="/accounts/login/")
 def my_recipes(request):
     c = RequestContext(request)
     if request.method == 'GET':
@@ -263,7 +314,7 @@ def search_recipes(request):
     return render_to_response('search.html', c)
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="/accounts/login/")
 def delete_ribbon(request, ribbon_id):
     try:
         ribbon = Ribbon.objects.get(id=ribbon_id, user=request.user)
@@ -276,7 +327,7 @@ def delete_ribbon(request, ribbon_id):
     return HttpResponse('OK', mimetype="application/json")
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="/accounts/login/")
 def recipe_box(request):
     c = RequestContext(request)
     c['ribbons'] = Ribbon.objects.filter(
@@ -284,12 +335,24 @@ def recipe_box(request):
         'recipe').order_by('-time_created')
     return render_to_response('recipe_box.html', c)
 
-@login_required(login_url="/login/")
+@login_required(login_url="/accounts/login/")
 def action(request):
     if not request.method == 'POST':
         return JsonResponse({'status':'OK'})
     action = request.POST.get('action', None)
-    if action == 'changeBoxStatus':
+    if action == 'deleteRibbon':
+        recipe_id = request.POST.get('recipeId', None)
+        ribbon_id = request.POST.get('ribbonId', None)
+        try:
+            ribbon = Ribbon.objects.get(id=ribbon_id, user=request.user)
+        except ObjectDoesNotExist:
+            return HttpResponse('ERROR', mimetype="application/json")
+        recipe = ribbon.recipe
+        ribbon.delete()
+        if not recipe.ribbon_set.exists():
+            recipe.delete()
+        return HttpResponse('OK', mimetype="application/json")
+    elif action == 'changeBoxStatus':
         new_status = request.POST.get('newStatus', None) == 'true'
         recipe_id = request.POST.get('recipeId', None)
         ribbon_id = request.POST.get('ribbonId', None)
@@ -300,21 +363,27 @@ def action(request):
                 return JsonResponse({'status': 'FAIL'})
         else:
             return JsonResponse({'status': 'FAIL'})
+        copy_tags = False
         try:
             ribbon = Ribbon.objects.get(id=ribbon_id)
             if ribbon.recipe != recipe:
                 return JsonResponse({'status': 'FAIL'})
         except ObjectDoesNotExist:
             ribbon = Ribbon(recipe=recipe, user=request.user)
+            copy_tags = request.user.get_profile().copy_tags
         ribbon.is_boxed = new_status
         ribbon.save()
+        if copy_tags:
+            tags = Tag.objects.filter(ribbon__recipe=recipe)
+            for tag in tags:
+                Tag(key=tag.key, value=tag.value, ribbon=ribbon).save()
 
         return JsonResponse({'status': 'OK', 'ribbonId': ribbon.id})
 
     else:
         return JsonResponse({'status':'OK'})
 
-@login_required(login_url="/login/")
+@login_required(login_url="/accounts/login/")
 def get_tag_category(request):
     if not request.method == 'GET':
         return JsonResponse({'status': 'OK'})

@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>{% block title %}NO TITLE{% endblock %}</title>
+    <title>{% block title %}{% endblock %}{{flatpage.title}}</title>
 
     <link rel="stylesheet" href="{{STATIC_URL}}css/main.css" type="text/css" media="screen" />
     {% block css %}
@@ -15,11 +15,12 @@
 	  {% if user.is_authenticated %}
 	  <ul>
 	    <li>Welcome {{user.first_name}}!</li>
-	    <li><a href="/logout/">Logout</a></li>
+	    <li><a href="{% url accounts.views.preferences %}">Preferences</a></li>
+	    <li><a href="/accounts/logout/">Logout</a></li>
 	  </ul>
 	  {% else %}
 	  <ul>
-	    <li><a href="/login/">Login</a></li>
+	    <li><a href="/accounts/login/">Login</a></li>
 	  </ul>
 	  {% endif %}
 	</div>
@@ -43,12 +44,12 @@
       <div id="inner-container">
 	<div id="content">
 	  {% block content %}
-	  NO CONTENT
 	  {% endblock %}
+	  {{flatpage.content}}
 	</div>
     </div>
       <div id="footer">
-	<span>foodmarks &copy; 2011. <a href="mailto:kevin@kevinleung.com">Contact</a>
+	<span>foodmarks &copy; 2011-2012. <a href="mailto:kevin@kevinleung.com">Contact</a> | <a href="/about/">About Us</a>
       </div>
     </div>
 
@@ -59,17 +60,6 @@
     <script type="text/javascript" src="{{STATIC_URL}}js/tag_editor.js"></script>
     <script type="text/javascript">
       var csrfToken = '{{ csrf_token }}';
-      $(".delete-ribbon").click(function(){
-      var agree = confirm('Are you sure you want to delete this bookmark? If no one else has bookmarked it, the recipe will also be deleted.');
-      if(agree){
-      $.post($(this).attr('href'),
-      {'csrfmiddlewaretoken': csrfToken}, function(data){
-      $(this).closest('.listing').slideUp();
-      });
-      }
-      return false;
-
-      });
     </script>
     {% block js %}
 

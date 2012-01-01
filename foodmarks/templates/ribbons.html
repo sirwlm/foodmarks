@@ -21,7 +21,7 @@
 	<input type="hidden" class="ribbon-id" value="{{ribbon.id}}" />
 	<span><a class="add-to-box {% if ribbon.is_boxed %}hide{% endif %}" href="#">Add To Recipe Box</a><a class="remove-from-box {% if not ribbon.is_boxed %}hide{% endif %}" href="#">Remove From Recipe Box</a></span> |
 	<span><a class="edit" href="{% url fm.views.edit_recipe ribbon.id %}">Edit</a></span> |
-	<span><a class="delete-ribbon" href="{% url fm.views.delete_ribbon ribbon.id %}">Delete</a></span>
+	<span><a class="delete-ribbon" href="#">Delete</a></span>
       </div>
       <div class="tags">
 	{% for tag in ribbon.tag_set.all %}

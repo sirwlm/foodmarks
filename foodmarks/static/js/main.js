@@ -32,4 +32,27 @@ $(document).ready(function(){
 		return false;
 	    });
 
+	$(".delete-ribbon").click(function(){
+		var agree = confirm('Are you sure you want to delete this bookmark? If no one else has bookmarked it, the recipe will also be deleted.');
+		if(agree){
+		    var actions = $(this).closest('.actions');
+		    var recipeId = actions.find('.recipe-id').val();
+		    var ribbonId = actions.find('.ribbon-id').val();
+		    $.ajax({
+			    type: 'POST',
+				url: '/action/',
+				data: {recipeId: recipeId, ribbonId: ribbonId,
+				    action: 'deleteRibbon',
+				    'csrfmiddlewaretoken': csrfToken},
+				async: false,
+				success:
+			    function(data){
+			    }});
+		    window.location.reload();
+
+		}
+		return false;
+
+	    });
+
     });

@@ -2,6 +2,9 @@
 /* -----------------------------------*/
 /* ---------->>> GLOBAL <<<-----------*/
 /* -----------------------------------*/
+html {
+    overflow-y: scroll;
+}
 body {
     font-family: helvetica, arial, sans-serif;
     font-size:16px;
@@ -26,6 +29,7 @@ ul {
 .half-width {
     float: left;
     width: 440px;
+    margin-right: 20px;
     }
 .left-width {
     float: left;
@@ -49,8 +53,10 @@ ul {
     background:#eeeeee;
     color:#a0a0a0;
     padding:10px 20px;
+    height: 80px;
 }
 #nav {
+    clear: both;
     border-bottom:1px #000000 solid;
 }
 #content {
@@ -67,11 +73,11 @@ ul {
 /* ---------->>> ESSENTIALS <<<-----------*/
 /* -----------------------------------*/
 #header h1 {
+    float: left;
 }
 #login {
     float:right;
-    position:relative;
-    top:-65px;
+    margin-top: 10px;
 }
 #nav li {
     display:inline-block;

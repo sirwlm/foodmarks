@@ -55,6 +55,7 @@ function addTag(key, value, id){
 	    valueDict['deleted'] = false;
 	    $(valueDict['elem']).show().effect('highlight', {}, 3000);
 	}else{
+	    $(tags[key]['row']).show();
 	    var valueTagDict = createValueTagDict(value);
 	    tags[key]['values'][value] = valueTagDict;
 	    if(id != null) valueTagDict['id'] = id;

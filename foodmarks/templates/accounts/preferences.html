@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}foodmarks: User Preferences{% endblock %}
+
+{% block content %}
+<h2>User Preferences</h2>
+<p>{{message}}</p>
+<form id="mainform" name="mainform" action="./" method="post">
+  {% csrf_token %}
+  {{form.errors}}
+  <table>
+    {{form.as_table}}
+  </table>
+  <br />
+  <input type="submit" value="Save Preferences" />
+{% endblock %}

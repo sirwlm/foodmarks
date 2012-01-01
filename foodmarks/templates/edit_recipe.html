@@ -9,7 +9,8 @@
   {% csrf_token %}
   {{recipe_form.errors}}
   {{ribbon_form.errors}}
-  <table class="left-width">
+  <input type="hidden" name="recipe-id" value="{{recipe_form.instance.id|default:''}}" />
+  <table class="half-width">
     {{recipe_form.as_table}}
     {{ribbon_form.as_table}}
     {% if user.is_staff %}
@@ -24,7 +25,7 @@
     </tr>
     {% endif %}
   </table>
-  <div class="right-width">
+  <div class="half-width">
     <div id="edit-tags">
       <h3>Tags</h3>
       <input id="tag-json" name="tag-json" type="hidden" />

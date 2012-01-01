@@ -5,4 +5,7 @@
 {% block content %}
 <h2>Recipe Box</h2>
 {% include "ribbons.html" %}
+{% if not ribbons %}
+<p>There's nothing in your Recipe Box. You can try <a href="{% url fm.views.search_recipes %}">searching</a> for recipes to make!</p>
+{% endif %}
 {% endblock %}
