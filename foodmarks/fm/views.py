@@ -40,8 +40,7 @@ def bookmarklet(request):
     ctx = RequestContext(request)
     ctx['add'] = True
 
-    recipe = None
-    saved = _save_recipe(request, ctx, recipe=recipe)
+    saved = _save_recipe(request, ctx)
 
     if saved:
         return redirect(reverse(my_recipes), permanent=True)

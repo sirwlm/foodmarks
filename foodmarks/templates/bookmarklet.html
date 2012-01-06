@@ -11,6 +11,17 @@
   <table class="half-width">
     {{recipe_form.as_table}}
     {{ribbon_form.as_table}}
+    {% if user.is_staff %}
+    <tr><th>Add ribbon as:</th>
+      <td>
+	<select name="user">
+	  {% for user in users %}
+	  <option value="{{user.id}}" {% if user.id == user_id %}SELECTED{% endif %}>{{user}}</option>
+	  {% endfor %}
+	</select>
+      </td>
+    </tr>
+    {% endif %}
   </table>
   <div class="half-width">
     <div id="edit-tags">
@@ -23,7 +34,8 @@
       <ul>
 	<li><strong>A few tips:</strong></li>
 	<li>- try to input everything in the singular, without spaces, and without punctuation</li>
-	<li>- you can directly input a value, and foodmarks will try to match it automatically to a key</li>
+	<li>- after typing in a tag, hit enter, and foodmarks will try to automatically find a category
+	<li>- common categories: course, method, cuisine, type, ingredient, occasion, season, dish, source, concern, content</li>
     </div>
 
     <input id="save-recipe" type="button" value="Save Recipe" />
