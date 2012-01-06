@@ -310,7 +310,8 @@ def search_recipes(request):
             priority += 1
 
         if all_ribbons:
-            ctx['recipes'] = Recipe.objects.filter(ribbon__in=ribbons)
+            ctx['recipes'] = Recipe.objects.filter(
+                ribbon__in=ribbons).distinct()
             _paginate_content(request, ctx, 'recipes')
 
     tags_ordered = []
