@@ -4,19 +4,27 @@
 
 {% block content %}
 {% if recipe.link %}
-<a href="{{recipe.link}}"><h2>{{recipe}}</h2></a>
+<a href="{{recipe.link}}" target="_blank"><h2>{{recipe}}</h2></a>
 {% else %}
 <h2>{{recipe}}</h2>
 {% endif %}
 <div class="left-width">
-  <strong>Description</strong>{{recipe.description|default:''|linebreaks}}
-  <strong>Ingredients</strong>{{recipe.ingredients|default:''|linebreaks}}
-  <strong>Directions</strong>{{recipe.directions|default:''|linebreaks}}
+  {% if recipe.description %}
+  <strong>Description</strong>{{recipe.description|linebreaks}}
+  {% endif %}
+  {% if recipe.ingredients %}
+  <strong>Ingredients</strong>{{recipe.ingredients|linebreaks}}
+  {% endif %}
+  {% if recipe.directions %}
+  <strong>Directions</strong>{{recipe.directions|linebreaks}}
+  {% endif %}
 
   {% if ribbon %}
-  <strong>Comments</strong>{{ribbon.comments|default:''|linebreaks}}
+  {% if ribbons.comments %}
+  <strong>Comments</strong>{{ribbon.comments|linebreaks}}
+  {% endif %}
   <strong>My Tags</strong>
-  <table>
+  <table class="tag-table">
     {% for key, values in ribbon.get_tag_dict.items %}
     <tr><td class="key">{{key}}</td>
       <td>{% for value in values %}
@@ -27,7 +35,7 @@
   </table>
   {% endif %}
   <strong>All Tags</strong>
-  <table>
+  <table class="tag-table">
     {% for key, values in recipe.get_tag_dict.items %}
     <tr><td class="key">{{key}}</td>
       <td>{% for value in values %}

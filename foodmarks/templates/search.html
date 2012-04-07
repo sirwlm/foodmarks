@@ -4,86 +4,105 @@
 
 {% block content %}
 <h2>Search Recipes</h2>
-<form id="searchform" name="searchform" action="{% url fm.views.search_recipes %}" method="get">
-<label for="query-string"><strong>Title Search: </strong></label><input id="query-string" name="q" type="text" value="{{q}}" /> <br />
-<div style="margin: 10px 0;">
-{% if own_ribbons %}
-<span>Search My Bookmarks</span> | <a id="search-all" href="#">Search All Bookmarks</a>
-{% else %}
-<a id="search-my" href="#">Search My Bookmarks</a> | <span>Search All Bookmarks</span>
-{% endif %}
-</div>
-<input id="page" name="page" type="hidden" value="{{page}}" />
-<input id="search-all-input" name="all" type="checkbox" value="all" {% if not own_ribbons %}CHECKED{% endif %} style="display:none;" />
-<table id="tag-search-table" cellpadding="0" cellspacing="0">
-{% for row in search_tags %}
-<tr><th>{{row.0}}</th>
-  <td>
-    <ul class="search-value-list">
-      {% for value in row.1 %}
-      <li {% if value.selected %}class="selected"{% endif %}><a class="toggle-tag" href="#">{{value.value}} {{value.count}}</a><input class="tag-search-checkbox" name="tag" type="checkbox" value="{{row.0}}:{{value.value}}" {% if value.selected %}CHECKED{% endif %} /></li>
+
+<div id="search-options" class="content-pane">
+  <form id="searchform" name="searchform" action="{% url fm.views.search_recipes %}" method="get">
+    <input id="page" name="page" type="hidden" value="" />
+
+    <div class="search-option">
+      <ul>
+	{% if own_ribbons %}
+	<li>Search My Bookmarks</li>
+	<li><a id="search-all" href="#">Search All Bookmarks</a></li>
+	{% else %}
+	<li><a id="search-my" href="#">Search My Bookmarks</a></li>
+	<li><span>Search All Bookmarks</span></li>
+	{% endif %}
+      </ul>
+      <input id="search-all-input" name="all" type="checkbox" value="all" {% if not own_ribbons %}CHECKED{% endif %} style="display:none;" />
+    </div>
+
+    <div class="search-option">
+      <label for="query-string"><h3>Title Search</h3></label>
+      <input id="query-string" name="q" type="text" value="{{q}}" />
+    </div>
+
+    <div id="tag-search-options" cellpadding="0" cellspacing="0">
+      {% for row in search_tags %}
+      <div class="search-option">
+	<h3>{{row.0|capfirst}}</h3>
+	<select multiple="multiple" class="chzn-select" name="tag" data-placeholder="Choose a {{row.0}}...">
+	  {% for value in row.1 %}
+	  <option {% if value.selected %}selected{% endif %} value="{{row.0}}:{{value.value}}">{{value.value}} ({{value.count}})</option>
+	  {% endfor %}
+	</select>
+      </div>
       {% endfor %}
-    </ul>
-  </td>
-</tr>
-{% endfor %}
-</table>
+    </div>
+    <input type="submit" value="Search" />
+  </form>
+</div>
 
-</form>
-{% if own_ribbons %}
-{% include "ribbons.html" %}
-{% else %}
-{% include "recipe_list.html" %}
-{% endif %}
-
-{% if page != 'all' %}
-<div id="pagination">
-  {% if page != 1 %}
-  <a href="#" page="{{page|add:'-1'}}">Prev</a>
+<div id="search-results" class="content-pane">
+  {% if own_ribbons %}
+  {% include "ribbons.html" %}
+  {% else %}
+  {% include "recipe_list.html" %}
   {% endif %}
-  {% for p in page_range %}
-  {% if p == page %}<span>{{p}}</span>
-  {% else %}<a href="#" page="{{p}}">{{p}}</a>{% endif %}
-  {% endfor %}
-  {% if page != num_pages %}
-  <a href="#" page="{{page|add:'1'}}">Next</a>
+
+  {% if page != 'all' %}
+  <div id="pagination">
+    {% if page != 1 %}
+    <a href="#" page="{{page|add:'-1'}}">Prev</a>
+    {% endif %}
+    {% for p in page_range %}
+    {% if p == page %}<span>{{p}}</span>
+    {% else %}<a href="#" page="{{p}}">{{p}}</a>{% endif %}
+    {% endfor %}
+    {% if page != num_pages %}
+    <a href="#" page="{{page|add:'1'}}">Next</a>
+    {% endif %}
+  </div>
   {% endif %}
 </div>
-{% endif %}
 
 {% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{{STATIC_URL}}js/chosen/chosen.css" />
+{% endblock %}
+
 {% block js %}
+<script src="{{STATIC_URL}}js/chosen/chosen.jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-$(document).ready(function(){
-$(".toggle-tag").click(function(){
-var input = $(this).next('input');
-input.prop('checked', !input.prop('checked'));
-$('#page').val('');
-$('#searchform').submit();
-return false;
-});
+  $(document).ready(function(){
 
-$('#search-all').click(function(){
-$('#search-all-input').prop('checked', true);
-$('#page').val('');
-$('#searchform').submit();
-return false;
-});
+  $(".chzn-select").chosen().change(function(){
+  $('#page').val('');
+  $('#searchform').submit();
+  return false;
+  });
 
-$('#search-my').click(function(){
-$('#search-all-input').prop('checked', false);
-$('#page').val('');
-$('#searchform').submit();
-return false;
-});
+  $('#search-all').click(function(){
+  $('#search-all-input').prop('checked', true);
+  $('#page').val('');
+  $('#searchform').submit();
+  return false;
+  });
 
-$('#pagination a').click(function(){
-$('#page').val($(this).attr('page'));
-$('#searchform').submit();
-return false;
-});
+  $('#search-my').click(function(){
+  $('#search-all-input').prop('checked', false);
+  $('#page').val('');
+  $('#searchform').submit();
+  return false;
+  });
 
-});
+  $('#pagination a').click(function(){
+  $('#page').val($(this).attr('page'));
+  $('#searchform').submit();
+  return false;
+  });
+
+  });
 </script>
 {% endblock %}

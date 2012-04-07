@@ -26,27 +26,33 @@ ul {
 .hide {
     display: none;!important
 }
+.content-pane {
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align: top;
+}
 .half-width {
     display: inline-block;
     *display: inline;
     zoom: 1;
     vertical-align: top;
-    width: 440px;
-    margin-right: 20px;
+    width: 48%;
+    margin-right: 2%;
     }
 .left-width {
     display: inline-block;
     *display: inline;
     zoom: 1;
     vertical-align: top;
-    width: 640px;
+    width: 66%;
     }
 .right-width {
     display: inline-block;
     *display: inline;
     zoom: 1;
     vertical-align: top;
-    width: 320px;
+    width: 34%;
     }
 /* -----------------------------------*/
 /* ---------->>> LAYOUT <<<-----------*/
@@ -107,7 +113,7 @@ ul {
 /* >>> RECIPE/RIBBON LIST SHARED<<<---*/
 /* -----------------------------------*/
 .listing {
-    height:50px;
+    /*height:50px;*/
     position:relative;
     border-bottom:1px solid #a0a0a0;
     padding:10px 0 5px;
@@ -135,18 +141,19 @@ ul {
     font-size:12px;
 }
 .listing .tags {
-    float:right;
+    margin-top: 5px;
 }
 .listing .tag {
     background: #a0a0a0;
     padding: 3px;
-    margin: 0 0 0 2px;
+    margin: 0 2px 0 0;
+    line-height: 22px;
 }
 .listing .tag a{
     color: #000000;
     }
 .listing .actions {
-    float:left;
+
 }
 .listing .total {
     background: #a0a0a0;
@@ -183,6 +190,9 @@ ul {
 /* -----------------------------------*/
 /* ---------->>> TAG EDITOR <<<-------*/
 /* -----------------------------------*/
+.tag-table{
+    border-spacing: 0px 8px;
+}
 #edit-tags {
     }
 .tag-value {
@@ -194,6 +204,7 @@ ul {
     cursor: pointer;
     background: #000000;
     color: #ffffff;
+    margin-left: 5px;
 }
 #tag-loader {
     display: inline;
@@ -207,35 +218,21 @@ ul {
 /* -----------------------------------*/
 /* ---------->>> SEARCH INTERFACE <<<-------*/
 /* -----------------------------------*/
-#tag-search-table {
-
-    }
-#tag-search-table th{
-    vertical-align: top;
-    }
-#tag-search-table td{
-    padding-bottom: 10px;
-    }
-.search-value-list {
-    margin-left: 10px;
-    }
-.search-value-list li {
-    display:inline-block;
-    margin: 0 2px 2px 0;
+#search-options {
+    width: 19%;
+    border-right: 1px solid #a0a0a0;
 }
-.search-value-list li a{
-    display:inline-block;
-    border: 1px solid #a0a0a0;
-    padding: 2px;
-    maring: 2px;
-    border-radius: 2px;
-    -moz-border-radius: 2px;
-    }
-.search-value-list li.selected a, .search-value-list li a:hover{
-    color: #ffffff;
-    background-color: #a0a0a0;
-    text-decoration: none;
-    }
-.tag-search-checkbox {
-    display:none;
-    }
+#search-results {
+    margin-left: 1%;
+    width: 79%;
+}
+.search-option {
+    margin-bottom: 15px;
+}
+.search-option h3 {
+    margin: 0 0 5px;
+}
+#search-options select{
+    width: 80%;
+    height: 20px;
+}
