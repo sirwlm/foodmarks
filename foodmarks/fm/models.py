@@ -12,7 +12,7 @@ class Recipe(models.Model):
 
     time_created = models.DateTimeField(auto_now_add=True)
 
-    def get_tag_dict(self, user=None):
+    def get_tag_dict(self, user=None, dedup=True):
         if user is not None:
             try:
                 ribbon = Ribbon.objects.get(recipe=self, user=user)
@@ -27,10 +27,35 @@ class Recipe(models.Model):
                     tag_dict[tag.key] = [tag.value]
                 else:
                     tag_dict[tag.key].append(tag.value)
-            for value in tag_dict.itervalues():
-                value.sort()
+            for key, value in tag_dict.iteritems():
+                if dedup:
+                    tag_dict[key] = sorted(set(value))
+                else:
+                    value.sort()
+
             self._tag_dict = tag_dict
         return self._tag_dict
+
+    def get_used_count(self):
+        count = 0
+        for ribbon in self.ribbon_set.all():
+            if ribbon.is_used:
+                count += 1
+        return count
+
+    def get_thumbs_up_count(self):
+        count = 0
+        for ribbon in self.ribbon_set.all():
+            if ribbon.thumb == True:
+                count += 1
+        return count
+
+    def get_thumbs_down_count(self):
+        count = 0
+        for ribbon in self.ribbon_set.all():
+            if ribbon.thumb == False:
+                count += 1
+        return count
 
     def __unicode__(self):
         return self.title
@@ -53,7 +78,12 @@ class Ribbon(models.Model):
 
     is_boxed = models.BooleanField(default=False)
     is_used = models.BooleanField(default=False)
-    thumb = models.NullBooleanField(blank=True, null=True)
+    THUMB_CHOICES = (
+        (True, 'Thumbs Up'),
+        (False, 'Thumbs Down'),
+        )
+    thumb = models.NullBooleanField(blank=True, null=True,
+                                    verbose_name="Rating")
 
     def get_tag_dict(self):
         if getattr(self, '_tag_dict', None) is None:

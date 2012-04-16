@@ -7,53 +7,25 @@ html {
 }
 body {
     font-family: helvetica, arial, sans-serif;
-    font-size:16px;
+    font-size: 16px;
 }
 h1 { }
 h2 { }
 a, a:visited {
-    color:#a0a0a0;
-    text-decoration:none;
+    color: #a0a0a0;
+    text-decoration: none;
 }
 a:hover {
-    text-decoration:underline;
+    text-decoration: underline;
 }
 ul {
-    list-style:none;
-    padding:0;
-    margin:0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 .hide {
     display: none;!important
 }
-.content-pane {
-    display: inline-block;
-    *display: inline;
-    zoom: 1;
-    vertical-align: top;
-}
-.half-width {
-    display: inline-block;
-    *display: inline;
-    zoom: 1;
-    vertical-align: top;
-    width: 48%;
-    margin-right: 2%;
-    }
-.left-width {
-    display: inline-block;
-    *display: inline;
-    zoom: 1;
-    vertical-align: top;
-    width: 66%;
-    }
-.right-width {
-    display: inline-block;
-    *display: inline;
-    zoom: 1;
-    vertical-align: top;
-    width: 34%;
-    }
 /* -----------------------------------*/
 /* ---------->>> LAYOUT <<<-----------*/
 /* -----------------------------------*/
@@ -84,6 +56,34 @@ ul {
     text-align:center;
     clear: both;
 }
+.content-pane {
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align: top;
+}
+.half-width {
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align: top;
+    width: 48%;
+    margin-right: 2%;
+    }
+.left-width {
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align: top;
+    width: 66%;
+    }
+.right-width {
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    vertical-align: top;
+    width: 34%;
+    }
 /* -----------------------------------*/
 /* ---------->>> ESSENTIALS <<<-----------*/
 /* -----------------------------------*/
@@ -96,6 +96,8 @@ ul {
 }
 #nav li {
     display:inline-block;
+    *display: inline;
+    zoom: 1;
     line-height:30px;
     height:30px;
     padding-right: 20px;
@@ -108,6 +110,14 @@ ul {
 #nav-searchform {
     float: right;
     margin-top: -25px;
+}
+.rss-small {
+    display:inline-block;
+    *display: inline;
+    zoom: 1;
+    background: url("/static/images/feed-icon-14x14.png");
+    height: 14px;
+    width: 14px;
 }
 /* -----------------------------------*/
 /* >>> RECIPE/RIBBON LIST SHARED<<<---*/
@@ -235,4 +245,14 @@ ul {
 #search-options select{
     width: 80%;
     height: 20px;
+}
+/* -----------------------------------*/
+/* ---------->>> IMPROVEMENTS <<<-------*/
+/* -----------------------------------*/
+.improvement {
+    margin-bottom: 10px;
+}
+.improvement ul {
+    list-style: disc;
+    padding: 0 0 0 40px;
 }

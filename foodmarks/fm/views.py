@@ -234,7 +234,7 @@ def my_recipes(request):
     return render_to_response('my_recipes.html', ctx)
 
 
-def recipe(request, recipe_id):
+def view_recipe(request, recipe_id):
     ctx = RequestContext(request)
 
     try:
@@ -251,7 +251,7 @@ def recipe(request, recipe_id):
 
     ctx['recipe'] = recipe
 
-    return render_to_response('recipe.html', ctx)
+    return render_to_response('view_recipe.html', ctx)
 
 
 def _get_key_order(val):

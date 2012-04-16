@@ -9,9 +9,9 @@
     <div class="data">
       <span >
 	{% if recipe.link %}
-	<a class="title" href="{{recipe.link}}" target="_blank" title="{{recipe}}">{{recipe}}</a> <a class="small-link" href="{% url fm.views.recipe recipe.id %}">View on foodmarks</a>
+	<a class="title" href="{{recipe.link}}" target="_blank" title="{{recipe}}">{{recipe}}</a> <a class="small-link" href="{% url fm.views.view_recipe recipe.id %}">View on foodmarks</a>
 	{% else %}
-	<a href="{% url fm.views.recipe recipe.id %}">{{recipe}}</a>
+	<a href="{% url fm.views.view_recipe recipe.id %}">{{recipe}}</a>
 	{% endif %}
       </span>
     </div>
