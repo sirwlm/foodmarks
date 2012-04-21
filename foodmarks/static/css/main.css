@@ -1,18 +1,21 @@
-
 /* -----------------------------------*/
 /* ---------->>> GLOBAL <<<-----------*/
 /* -----------------------------------*/
 html {
     overflow-y: scroll;
+    height: 100%;
 }
 body {
     font-family: helvetica, arial, sans-serif;
     font-size: 16px;
+    margin: 0;
+    padding: 0;
+    height: 100%;
 }
 h1 { }
 h2 { }
 a, a:visited {
-    color: #a0a0a0;
+    color: #0776a0;
     text-decoration: none;
 }
 a:hover {
@@ -29,6 +32,16 @@ ul {
 /* -----------------------------------*/
 /* ---------->>> LAYOUT <<<-----------*/
 /* -----------------------------------*/
+.wrapper {
+/*
+Sticky Footer by Ryan Fait
+http://ryanfait.com/
+*/
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -26px; /* the bottom margin is the negative value of the footer's height */
+}
 #container {
     width:960px;
     margin:0 auto;}
@@ -36,11 +49,19 @@ ul {
     clear: both;
     padding-bottom: 10px;
 }
-#header {
-    background:#eeeeee;
-    color:#a0a0a0;
-    padding:10px 20px;
+#header-wrapper {
+    background: #a61d00;
+    color: #ffffff;
+    padding: 10px 20px;
     height: 80px;
+}
+#header {
+    width: 960px;
+    margin: 0 auto;
+    height: 80px;
+    }
+#header a {
+    color: #ffffff;
 }
 #nav {
     clear: both;
@@ -49,12 +70,16 @@ ul {
 #content {
 }
 #footer {
-    background:#eeeeee;
-    color:#a0a0a0;
+    background: #e1e2e3;
+    color: #000000;
     font-size:14px;
     padding:5px;
     text-align:center;
     clear: both;
+}
+.push {
+    clear: both;
+    height: 26px; /* .push must be the same height as .footer */
 }
 .content-pane {
     display: inline-block;
@@ -154,10 +179,12 @@ ul {
     margin-top: 5px;
 }
 .listing .tag {
-    background: #a0a0a0;
-    padding: 3px;
-    margin: 0 2px 0 0;
+    background: #e1e2e3;
+    padding: 5px;
+    margin: 0 5px 0 0;
     line-height: 22px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 .listing .tag a{
     color: #000000;
@@ -166,7 +193,7 @@ ul {
 
 }
 .listing .total {
-    background: #a0a0a0;
+    background: #e1e2e3;
     position:absolute;
     top:0;
     right:0;
@@ -205,10 +232,15 @@ ul {
 }
 #edit-tags {
     }
+.key {
+    padding-right: 10px;
+}
 .tag-value {
-    background: #a0a0a0;
-    padding:3px 5px;
-    margin:0 5px 0 0;
+    background: #e1e2e3;
+    padding: 3px 5px;
+    margin: 0 5px 0 0;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 .tag-remove {
     cursor: pointer;

@@ -246,8 +246,27 @@ def view_recipe(request, recipe_id):
         try:
             ribbon = Ribbon.objects.get(recipe=recipe, user=request.user)
             ctx['ribbon'] = ribbon
+            ctx['other_ribbons'] = Ribbon.objects.filter(recipe=recipe).exclude(id=ribbon.id)
+            my_tags = ribbon.get_tag_dict()
+            all_tags = recipe.get_tag_dict()
+
+            other_tags = {}
+
+            for key, values in all_tags.items():
+                if key in my_tags:
+                    temp = [value for value in values if value not in my_tags[key]]
+                    if temp:
+                        other_tags[key] = temp
+                else:
+                    other_tags[key] = values
+
+            ctx['my_tags'] = my_tags
+            ctx['other_tags'] = other_tags
+
         except ObjectDoesNotExist:
-            pass
+            ctx['other_ribbons'] = Ribbon.objects.filter(recipe=recipe)
+            ctx['other_tags'] = recipe.get_tag_dict()
+
 
     ctx['recipe'] = recipe
 

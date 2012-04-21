@@ -25,7 +25,7 @@
   {% endif %}
   <strong>My Tags</strong>
   <table class="tag-table">
-    {% for key, values in ribbon.get_tag_dict.items %}
+    {% for key, values in my_tags.items %}
     <tr><td class="key">{{key}}</td>
       <td>{% for value in values %}
       <span class="tag-value" title="{{value}}">{{value}}</span>
@@ -35,17 +35,19 @@
   </table>
   {% endif %}
 
-  <strong>All Comments</strong>
+  {% if other_ribbons %}
+  <strong>Other Comments</strong>
   <ul>
-    {% for ribbon in recipe.ribbon_set.all %}
+    {% for ribbon in other_ribbons %}
     {% if ribbon.comments %}
     <li><strong>{{ribbon.user}}:</strong> {{ribbon.comments}}</li>
     {% endif %}
     {% endfor %}
   </ul> <br />
-  <strong>All Tags</strong>
+  {% if other_tags %}
+  <strong>Other Tags</strong>
   <table class="tag-table">
-    {% for key, values in recipe.get_tag_dict.items %}
+    {% for key, values in other_tags.items %}
     <tr><td class="key">{{key}}</td>
       <td>{% for value in values %}
       <span class="tag-value" title="{{value}}">{{value}}</span>
@@ -53,6 +55,8 @@
     </tr>
     {% endfor %}
   </table>
+  {% endif %}
+  {% endif %}
 </div>
 <div class="right-width">
   <strong>Stats</strong><br />
