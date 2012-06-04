@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
@@ -10,7 +12,9 @@ class NewestRecipesFeed(Feed):
     description = 'The latest recipes and bookmarks on foodmarks.'
 
     def items(self):
-        return Recipe.objects.order_by('-time_created')[:10]
+        time = datetime.datetime.now() - datetime.timedelta(days=7)
+        return Recipe.objects.filter(
+                time_created__gte=time).order_by('-time_created')
 
     def item_title(self, item):
         return item.title
