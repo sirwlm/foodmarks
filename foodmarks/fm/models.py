@@ -6,6 +6,7 @@ from foodmarks.fm.constants import *
 class Recipe(models.Model):
     title = models.CharField(max_length=200)
     link = models.URLField(blank=True, null=True, max_length=255, unique=True)
+    servings = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     ingredients = models.TextField(blank=True, null=True)
     directions = models.TextField(blank=True, null=True)

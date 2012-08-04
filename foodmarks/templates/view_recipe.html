@@ -9,6 +9,9 @@
 <h2>{{recipe}}</h2>
 {% endif %}
 <div class="left-width">
+  {% if recipe.servings %}
+  <p><strong>Servings</strong> {{recipe.servings}}</p>
+  {% endif %}
   {% if recipe.description %}
   <strong>Description</strong>{{recipe.description|linebreaks}}
   {% endif %}
