@@ -30,7 +30,7 @@ function generateTagJsonString(){
 }
 
 function normalize(val){
-    return val.toLowerCase().replace(/\s/g, '').replace(':', '');
+    return $.trim(escapeHTML(val)).toLowerCase().replace(/\s/g, '').replace(':', '');
 }
 
 function createValueTagDict(value){
@@ -49,90 +49,89 @@ function createValueTagDict(value){
 
 function addTag(key, value, id){
     if(key in tags){
-	if(value in tags[key]['values']){
-	    $(tags[key]['row']).show();
-	    var valueDict = tags[key]['values'][value];
-	    valueDict['deleted'] = false;
-	    $(valueDict['elem']).show().effect('highlight', {}, 3000);
-	}else{
-	    $(tags[key]['row']).show();
-	    var valueTagDict = createValueTagDict(value);
-	    tags[key]['values'][value] = valueTagDict;
-	    if(id != null) valueTagDict['id'] = id;
-	    tags[key]['valueCol'].appendChild(valueTagDict['elem']);
-	    $(valueTagDict['elem']).effect('highlight', {}, 3000);
-	}
+        if(value in tags[key]['values']){
+            $(tags[key]['row']).show();
+            var valueDict = tags[key]['values'][value];
+            valueDict['deleted'] = false;
+            $(valueDict['elem']).show().effect('highlight', {}, 3000);
+        }else{
+            $(tags[key]['row']).show();
+            var valueTagDict = createValueTagDict(value);
+            tags[key]['values'][value] = valueTagDict;
+            if(id != null) valueTagDict['id'] = id;
+            tags[key]['valueCol'].appendChild(valueTagDict['elem']);
+            $(valueTagDict['elem']).effect('highlight', {}, 3000);
+        }
     }else{
-	var row = document.createElement('tr');
+        var row = document.createElement('tr');
 
-	var keyCol = document.createElement('td');
-	keyCol.className = 'key';
-	keyCol.appendChild(document.createTextNode(key));
-	row.appendChild(keyCol);
+        var keyCol = document.createElement('td');
+        keyCol.className = 'key';
+        keyCol.appendChild(document.createTextNode(key));
+        row.appendChild(keyCol);
 
-	var valueCol = document.createElement('td');
-	row.appendChild(valueCol);
+        var valueCol = document.createElement('td');
+        row.appendChild(valueCol);
 
-	var valueTagDict = createValueTagDict(value);
-	if(id != null) valueTagDict['id'] = id;
-	valueCol.appendChild(valueTagDict['elem']);
+        var valueTagDict = createValueTagDict(value);
+        if(id) valueTagDict['id'] = id;
+        valueCol.appendChild(valueTagDict['elem']);
 
-	tags[key] = {
-	       'row': row,
-	       'keyCol': keyCol,
-	       'valueCol': valueCol,
-	       'values': {}
-	};
-	tags[key]['values'][value] = valueTagDict;
-	document.getElementById('current-tags').appendChild(row);
-	$(keyCol).effect('highlight', {}, 3000);
-	$(valueTagDict['elem']).effect('highlight', {}, 3000);
+        tags[key] = {
+               'row': row,
+               'keyCol': keyCol,
+               'valueCol': valueCol,
+               'values': {}
+        };
+        tags[key]['values'][value] = valueTagDict;
+        document.getElementById('current-tags').appendChild(row);
+        $(keyCol).effect('highlight', {}, 3000);
+        $(valueTagDict['elem']).effect('highlight', {}, 3000);
+    }
+}
+
+function submitNewTag() {
+    var key = normalize($('#new-key').val());
+    var value = normalize($('#new-value').val());
+    $('#new-value').val(value);
+
+    if(value != ''){
+        if(key == ''){
+            $('#tag-loader').show();
+            $.get('/tag/category/', {'value': value},
+              function(data){
+                  if(data['status'] == 'OK' && data['categories'].length != 0) {
+                      $('#new-key').val(data['categories'][0]);
+                        $('#add-tag').show();
+                  }
+                  $('#tag-loader').hide();
+              });
+        } else {
+            addTag(key, value, null);
+            $('#new-key').val('');
+            $('#new-value').val('').focus();
+            $('#add-tag').hide();
+
+        }
     }
 }
 
 $(document).ready(function(){
 	$('#tag-loader').hide();
 
-	$('#new-key').keydown(function(e){
-		switch(parseInt(e.keyCode)){
-		case 13:
+	$('#new-key, #new-value').keydown(function(e){
+        if(parseInt(e.keyCode) == 13) {
 		    e.preventDefault();
-		    var key = normalize($.trim(escapeHTML($('#new-key').val())));
-		    var value = normalize($.trim(escapeHTML($('#new-value').val())));
-		    if(key != ''){
-			addTag(key, value);
-			$('#new-key').val('');
-			$('#new-value').val('').focus();
-		    }
-		    break;
-		}
-	    });
+            submitNewTag();
+        }
 
-	$('#new-value').keydown(function(e){
-		switch(parseInt(e.keyCode)){
-		case 13:
-		    e.preventDefault();
-		    var key = normalize($.trim(escapeHTML($('#new-key').val())));
-		    var value = normalize($.trim(escapeHTML($('#new-value').val())));
+        if($('#new-key').val() != '' && $('#new-value').val() != '')
+            $('#add-tag').show();
+    }).focusout(function(e) {
+        $(this).val(normalize($(this).val()));
+    });
 
-		    if(value != ''){
-			if(key == ''){
-			    $('#tag-loader').show();
-			    $.get('/tag/category/', {'value': value},
-				  function(data){
-				      if(data['status'] == 'OK' && data['categories'].length != 0)
-					  $('#new-key').val(data['categories'][0]);
-				      $('#tag-loader').hide();
-				  });
-			}else {
-			    addTag(key, value);
-			    $('#new-key').val('');
-			    $('#new-value').val('').focus();
-			}
-		    }
-		    break;
-		}
-	    });
+    $('#add-tag').click(submitNewTag);
 
 	$('#edit-tags').on('click', '.tag-remove', function(event){
 		var row = $(this).closest('tr');
@@ -145,4 +144,10 @@ $(document).ready(function(){
 		    row.hide();
 		event.stopPropagation();
 	    });
-    });
+
+    $('#new-key').autocomplete({
+                delay: 0,
+                minLength: 0,
+                source: ['course', 'method', 'cuisine', 'type', 'ingredient', 'occasion', 'season', 'dish', 'source', 'concern', 'content']
+                });
+});
