@@ -12,7 +12,6 @@ urlpatterns = patterns(
     url(r'^bookmarklet/', 'fm.views.bookmarklet'),
     url(r'^edit/(\d+)/$', 'fm.views.edit_recipe'),
     url(r'^recipebox/', 'fm.views.recipe_box'),
-    url(r'^myrecipes/', 'fm.views.my_recipes'),
     url(r'^recipe/(\d+)/$', 'fm.views.view_recipe'),
     url(r'^ribbon/delete/(\d+)/$', 'fm.views.delete_ribbon'),
     url(r'^search/$', 'fm.views.search_recipes'),

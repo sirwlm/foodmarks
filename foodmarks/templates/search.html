@@ -3,6 +3,7 @@
 {% block title %}foodmarks: Search Recipes{% endblock %}
 
 {% block content %}
+{% spaceless %}
 <h2>Search Recipes</h2>
 
 <div id="search-options" class="content-pane">
@@ -45,9 +46,9 @@
 
 <div id="search-results" class="content-pane">
   {% if own_ribbons %}
-  {% include "ribbons.html" %}
+  {% include "ribbons.html" with empty_template="includes/empty_ribbon_search.html"  %}
   {% else %}
-  {% include "recipe_list.html" %}
+  {% include "recipe_list.html" with empty_template="includes/empty_recipe_search.html" %}
   {% endif %}
 
   {% if page != 'all' %}
@@ -59,13 +60,13 @@
     {% if p == page %}<span>{{p}}</span>
     {% else %}<a href="#" page="{{p}}">{{p}}</a>{% endif %}
     {% endfor %}
-    {% if page != num_pages %}
+    {% if page != num_pages and num_pages != 0 %}
     <a href="#" page="{{page|add:'1'}}">Next</a>
     {% endif %}
   </div>
   {% endif %}
 </div>
-
+{% endspaceless %}
 {% endblock %}
 
 {% block css %}

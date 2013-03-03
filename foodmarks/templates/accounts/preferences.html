@@ -3,6 +3,7 @@
 {% block title %}foodmarks: User Preferences{% endblock %}
 
 {% block content %}
+{% spaceless %}
 <h2>User Preferences</h2>
 <p>{{message}}</p>
 <form id="mainform" name="mainform" action="./" method="post">
@@ -13,4 +14,5 @@
   </table>
   <br />
   <input type="submit" value="Save Preferences" />
+{% endspaceless %}
 {% endblock %}

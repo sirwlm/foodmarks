@@ -1,3 +1,4 @@
+{% spaceless %}
 <ul class="recipe-list listings">
   {% for recipe in recipes %}
   <li class="recipe-listing listing">
@@ -17,5 +18,10 @@
     </div>
     <div class="total">{{recipe.ribbon_set.count}}</div>
   </li>
+  {% empty %}
+  {% if empty_template %}
+  {% include empty_template %}
+  {% endif %}
   {% endfor %}
 </ul>
+{% endspaceless %}

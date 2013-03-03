@@ -3,6 +3,7 @@
 {% block title %}foodmarks: Add Recipe Bookmarklet{% endblock %}
 
 {% block content %}
+{% spaceless %}
 <p>{{message}}</p>
 <form id="mainform" name="mainform" action="./" method="post">
   {% csrf_token %}
@@ -42,6 +43,7 @@
 
   </div>
 </form>
+{% endspaceless %}
 {% endblock %}
 
 {% block js %}

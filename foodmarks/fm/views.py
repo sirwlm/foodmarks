@@ -1,14 +1,18 @@
+import json
+import math
+import operator
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Count
 from django.http import HttpResponse, HttpResponseServerError
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import (
+        render_to_response, redirect, get_object_or_404,
+        )
 from django.template import RequestContext
 from django.utils import simplejson
-
-import json
-import math
+from django.views.decorators.http import require_http_methods
 
 from foodmarks.fm.constants import *
 from foodmarks.fm.forms import *
@@ -18,7 +22,8 @@ PAGE_SIZE = 50
 
 class JsonResponse(HttpResponse):
     '''
-    this class makes it easier to quickly turn content into json and return it as a response
+    this class makes it easier to quickly turn content into json and
+    return it as a response
     '''
 
     def __init__(self, content, mimetype="application/json", *args, **kwargs):
@@ -43,7 +48,7 @@ def bookmarklet(request):
     saved = _save_recipe(request, ctx)
 
     if saved:
-        return redirect(reverse(my_recipes), permanent=True)
+        return redirect(reverse(search), permanent=True)
 
     return render_to_response('bookmarklet.html', ctx)
 
@@ -65,7 +70,7 @@ def add_recipe(request):
     saved = _save_recipe(request, ctx, recipe=recipe)
 
     if saved:
-        return redirect(reverse(my_recipes), permanent=True)
+        return redirect(reverse(search), permanent=True)
     else:
         return render_to_response('edit_recipe.html', ctx)
 
@@ -189,6 +194,7 @@ def _save_recipe(request, ctx, ribbon=None, recipe=None):
 
     return saved
 
+
 @login_required(login_url="/accounts/login/")
 def edit_recipe(request, ribbon_id):
     ctx = RequestContext(request)
@@ -196,12 +202,13 @@ def edit_recipe(request, ribbon_id):
     try:
         ribbon = Ribbon.objects.get(id=ribbon_id, user=request.user)
     except ObjectDoesNotExist:
-        return redirect(reverse(my_recipes), permanent=True)
+        return redirect(reverse(search), permanent=True)
 
     saved = _save_recipe(request, ctx, ribbon)
     if saved:
         ctx['message'] = 'Recipe successfully saved.'
     return render_to_response('edit_recipe.html', ctx)
+
 
 def _paginate_content(request, ctx, key="ribbons"):
     if request.method == 'GET':
@@ -226,21 +233,11 @@ def _paginate_content(request, ctx, key="ribbons"):
     ctx['page_range'] = xrange(1, ctx['num_pages'] + 1)
     ctx['page'] = page
 
-@login_required(login_url="/accounts/login/")
-def my_recipes(request):
-    ctx = RequestContext(request)
-    ctx['ribbons'] = Ribbon.objects.filter(user=request.user)
-    _paginate_content(request, ctx, 'ribbons')
-    return render_to_response('my_recipes.html', ctx)
-
 
 def view_recipe(request, recipe_id):
     ctx = RequestContext(request)
 
-    try:
-        recipe = Recipe.objects.get(id=recipe_id)
-    except ObjectDoesNotExist:
-        pass
+    recipe = get_object_or_404(Recipe, id=recipe_id)
 
     if request.user.is_authenticated():
         try:
@@ -282,56 +279,52 @@ def _get_key_order(val):
         return '{0: 3d}{1}'.format(len(ordered_known_keys), key)
 
 
+@require_http_methods(["GET"])
 def search_recipes(request):
     ctx = RequestContext(request)
 
-    if request.method == 'GET':
-        all_ribbons = request.GET.get('all', False) or \
-            not request.user.is_authenticated()
-        if all_ribbons:
-            ribbons = Ribbon.objects.all()
-        else:
-            ribbons = Ribbon.objects.filter(user=request.user)
+    all_ribbons = request.GET.get('all', False) or \
+        not request.user.is_authenticated()
+    ctx['own_ribbons'] = not all_ribbons
+    if all_ribbons:
+        ribbons = Ribbon.objects.all()
+    else:
+        ribbons = Ribbon.objects.filter(user=request.user)
 
-        query_string = request.GET.get('q', '')
-        if query_string != '':
-            recipe_match_q = Q()
+    query_string = request.GET.get('q', '')
+    if query_string != '':
+        ctx['q'] = query_string
+        ribbons = ribbons.filter(reduce(operator.and_,
+            (Q(recipe__title__icontains=token)
+            for token in query_string.split(' ') if token)))
 
-            query_tokens = query_string.split(' ')
-            for token in query_tokens:
-                if token:
-                    recipe_match_q |= Q(recipe__title__icontains=token)
-            ctx['q'] = query_string
-            ribbons = ribbons.filter(recipe_match_q)
+    selected_tags = request.GET.getlist('tag')
+    if selected_tags:
+        split_selected_tags = map(lambda s:s.split(':'), selected_tags)
 
-        ctx['own_ribbons'] = not all_ribbons
-        selected_tags = request.GET.getlist('tag')
-        if selected_tags:
-            split_selected_tags = map(lambda s:s.split(':'), selected_tags)
+        for split_selected_tag in split_selected_tags:
+            ribbons = ribbons.filter(tag__key=split_selected_tag[0], tag__value=split_selected_tag[1])
 
-            for split_selected_tag in split_selected_tags:
-                ribbons = ribbons.filter(tag__key=split_selected_tag[0], tag__value=split_selected_tag[1])
+    ctx['ribbons'] = ribbons
+    _paginate_content(request, ctx, 'ribbons')
 
-        ctx['ribbons'] = ribbons
-        _paginate_content(request, ctx, 'ribbons')
+    tags = Tag.objects.filter(ribbon__in=ribbons).values('key', 'value').annotate(count=Count('value')).order_by('value')
+    tag_map = {}
+    priority = 0
+    for tag in tags:
+        if not tag['key'] in tag_map:
+            tag_map[tag['key']] = {}
+        value = {'value': tag['value'], 'count': tag['count'],
+                 'priority': priority}
+        if tag['key'] + ':' + tag['value'] in selected_tags:
+            value['selected'] = True
+        tag_map[tag['key']][tag['value']] = value
+        priority += 1
 
-        tags = Tag.objects.filter(ribbon__in=ribbons).values('key', 'value').annotate(count=Count('value')).order_by('value')
-        tag_map = {}
-        priority = 0
-        for tag in tags:
-            if not tag['key'] in tag_map:
-                tag_map[tag['key']] = {}
-            value = {'value': tag['value'], 'count': tag['count'],
-                     'priority': priority}
-            if tag['key'] + ':' + tag['value'] in selected_tags:
-                value['selected'] = True
-            tag_map[tag['key']][tag['value']] = value
-            priority += 1
-
-        if all_ribbons:
-            ctx['recipes'] = Recipe.objects.filter(
-                ribbon__in=ribbons).distinct()
-            _paginate_content(request, ctx, 'recipes')
+    if all_ribbons:
+        ctx['recipes'] = Recipe.objects.filter(
+            ribbon__in=ribbons).distinct()
+        _paginate_content(request, ctx, 'recipes')
 
     tags_ordered = []
     for key, values in tag_map.items():
@@ -339,8 +332,7 @@ def search_recipes(request):
                                          key=lambda a: a['priority']),))
     ctx['search_tags'] = sorted(tags_ordered, key=_get_key_order)
 
-
-    return render_to_response('search.html', ctx)
+    return render_to_response('search.html', context_instance=ctx)
 
 
 @login_required(login_url="/accounts/login/")
@@ -362,7 +354,7 @@ def recipe_box(request):
     ctx['ribbons'] = Ribbon.objects.filter(
         user=request.user, is_boxed=True).select_related(
         'recipe').order_by('-time_created')
-    return render_to_response('recipe_box.html', ctx)
+    return render_to_response('recipe_box.html', context_instance=ctx)
 
 @login_required(login_url="/accounts/login/")
 def action(request):

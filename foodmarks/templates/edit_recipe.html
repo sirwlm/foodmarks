@@ -3,6 +3,7 @@
 {% block title %}foodmarks: {% if add %}Add Recipe{% else %}Edit {{recipe.title}}{% endif %}{% endblock %}
 
 {% block content %}
+{% spaceless %}
 <h2>{% if add %}Add Recipe{% else %}Edit <a href="{% url fm.views.view_recipe recipe.id %}">{{recipe.title}}</a>{% endif %}</h2>
 <p>{{message}}</p>
 <form id="mainform" name="mainform" action="./" method="post">
@@ -16,11 +17,11 @@
     {% if user.is_staff %}
     <tr><th>Add ribbon as:</th>
       <td>
-	<select name="user">
-	  {% for user in users %}
-	  <option value="{{user.id}}" {% if user.id == user_id %}SELECTED{% endif %}>{{user}}</option>
-	  {% endfor %}
-	</select>
+        <select name="user">
+          {% for user in users %}
+          <option value="{{user.id}}" {% if user.id == user_id %}SELECTED{% endif %}>{{user}}</option>
+          {% endfor %}
+        </select>
       </td>
     </tr>
     {% endif %}
@@ -35,16 +36,17 @@
       Category: <input id="new-key" type="text"/>
       <img id="tag-loader" class="loader hide" src="{{STATIC_URL}}/images/loader.gif" />
       <ul>
-	<li><strong>A few tips:</strong></li>
-	<li>- try to input everything in the singular, without spaces, and without punctuation</li>
-	<li>- after typing in a tag, hit enter, and foodmarks will try to automatically find a category
-	<li>- common categories: course, method, cuisine, type, ingredient, occasion, season, dish, source, concern, content</li>
+        <li><strong>A few tips:</strong></li>
+        <li>- try to input everything in the singular, without spaces, and without punctuation</li>
+        <li>- after typing in a tag, hit enter, and foodmarks will try to automatically find a category
+        <li>- common categories: course, method, cuisine, type, ingredient, occasion, season, dish, source, concern, content</li>
+      </div>
+
+      <input id="save-recipe" type="button" value="Save Recipe" />
+
     </div>
-
-    <input id="save-recipe" type="button" value="Save Recipe" />
-
-  </div>
-</form>
+  </form>
+{% endspaceless %}
 {% endblock %}
 
 {% block js %}

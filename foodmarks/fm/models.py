@@ -73,18 +73,22 @@ class Recipe(models.Model):
 class Ribbon(models.Model):
     recipe = models.ForeignKey(Recipe)
     user = models.ForeignKey(User)
-    comments = models.TextField(blank=True, null=True,
-                                verbose_name="my comments")
+    comments = models.TextField(
+            blank=True, null=True,verbose_name="my comments")
     time_created = models.DateTimeField(auto_now_add=True)
 
-    is_boxed = models.BooleanField(default=False)
-    is_used = models.BooleanField(default=False)
+    is_boxed = models.BooleanField(
+            default=False, verbose_name="Include in your Recipe Box?")
+    is_used = models.BooleanField(
+            default=False, verbose_name="Have you used this recipe?")
+
     THUMB_CHOICES = (
         (True, 'Thumbs Up'),
         (False, 'Thumbs Down'),
         )
-    thumb = models.NullBooleanField(blank=True, null=True,
-                                    verbose_name="Rating")
+    thumb = models.NullBooleanField(
+            blank=True, null=True, choices=THUMB_CHOICES,
+            verbose_name="How's the recipe?")
 
     def get_tag_dict(self):
         if getattr(self, '_tag_dict', None) is None:
@@ -107,6 +111,7 @@ class Ribbon(models.Model):
     class Meta:
         unique_together = ('recipe', 'user',)
         ordering = ['-time_created']
+
 
 class Tag(models.Model):
     ribbon = models.ForeignKey(Ribbon)
