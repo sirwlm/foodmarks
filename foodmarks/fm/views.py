@@ -48,7 +48,7 @@ def bookmarklet(request):
     saved = _save_recipe(request, ctx)
 
     if saved:
-        return redirect(reverse(search), permanent=True)
+        return redirect(reverse(search_recipes), permanent=True)
 
     return render_to_response('bookmarklet.html', ctx)
 
@@ -70,7 +70,7 @@ def add_recipe(request):
     saved = _save_recipe(request, ctx, recipe=recipe)
 
     if saved:
-        return redirect(reverse(search), permanent=True)
+        return redirect(reverse(search_recipes), permanent=True)
     else:
         return render_to_response('edit_recipe.html', ctx)
 
@@ -203,7 +203,7 @@ def edit_recipe(request, ribbon_id):
     try:
         ribbon = Ribbon.objects.get(id=ribbon_id, user=request.user)
     except ObjectDoesNotExist:
-        return redirect(reverse(search), permanent=True)
+        return redirect(reverse(search_recipes), permanent=True)
 
     saved = _save_recipe(request, ctx, ribbon)
     if saved:
