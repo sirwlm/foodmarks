@@ -223,7 +223,9 @@ http://ryanfait.com/
     float: right;
     margin-top: 10px;
 }
-
+.form-table textarea {
+    height: 40px;
+}
 /* -----------------------------------*/
 /* ---------->>> TAG EDITOR <<<-------*/
 /* -----------------------------------*/

@@ -4,14 +4,14 @@
 
 {% block content %}
 {% spaceless %}
-<h2>{% if add %}Add Recipe{% else %}Edit <a href="{% url fm.views.view_recipe recipe.id %}">{{recipe.title}}</a>{% endif %}</h2>
+{% block page-header %}<h2>{% if add %}Add Recipe{% else %}Edit <a href="{% url fm.views.view_recipe recipe.id %}">{{recipe.title}}</a>{% endif %}</h2>{% endblock %}
 <p>{{message}}</p>
 <form id="mainform" name="mainform" action="./" method="post">
   {% csrf_token %}
-  {{recipe_form.errors}}
-  {{ribbon_form.errors}}
+  {{recipe_form.non_field_errors}}
+  {{ribbon_form.non_field_errors}}
   <input type="hidden" name="recipe-id" value="{{recipe_form.instance.id|default:''}}" />
-  <table class="half-width">
+  <table class="half-width form-table">
     {{recipe_form.as_table}}
     {{ribbon_form.as_table}}
     {% if user.is_staff %}
@@ -38,7 +38,7 @@
       <input id="new-key" type="text"/>
       <input type="button" id="add-tag" value="Add" style="display: none;" />
       <img id="tag-loader" class="loader" src="{{STATIC_URL}}/images/loader.gif" style="display: none;" />
-      <p><small>Tips: Hit enter after typing a tag, hit enter to guess the category. Hit enter again when you have a tag and category to add it.</small></p>
+      <p><small>Tips: <br/ >Hit enter after typing a tag to guess the category. <br />Hit enter again when you have a tag and category to add it.</small></p>
     </div>
     <input id="save-recipe" type="button" value="Save Recipe" />
   </div>
@@ -55,6 +55,11 @@
   }
 
   $(document).ready(function(){
+    $('textarea').focusin(function(){
+        $(this).animate({height: 120}, 100);
+      }).focusout(function() {
+        $(this).animate({height: 40}, 100);
+      });
 
     $('#save-recipe').click(function(){
       document.getElementById('tag-json').value = generateTagJsonString();

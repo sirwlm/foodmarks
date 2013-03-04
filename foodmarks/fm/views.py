@@ -76,6 +76,11 @@ def add_recipe(request):
 
 
 def _save_recipe(request, ctx, ribbon=None, recipe=None):
+    """
+    core function for adding/editing/saving recipes
+    """
+
+    # try to associate with an existing recipe if it exists
     if request.method == 'GET' and not recipe:
         url = request.GET.get('url', None)
         title = request.GET.get('title', None)
@@ -85,6 +90,7 @@ def _save_recipe(request, ctx, ribbon=None, recipe=None):
             except ObjectDoesNotExist:
                 pass
 
+    # staff can add a ribbon as someone else
     if request.user.is_staff:
         ctx['users'] = User.objects.all()
         ctx['user_id'] = request.user.id
@@ -100,6 +106,7 @@ def _save_recipe(request, ctx, ribbon=None, recipe=None):
     if ribbon and not recipe:
         recipe = ribbon.recipe
 
+    # try to guess the recipe if it's a POST and there isn't one given
     if not recipe and request.method == 'POST':
         recipe_id = request.POST.get('recipe-id', None)
         if recipe_id:
@@ -115,30 +122,21 @@ def _save_recipe(request, ctx, ribbon=None, recipe=None):
                 except ObjectDoesNotExist:
                     pass
 
+    # try to find the ribbon if possible
     if recipe and not ribbon:
         try:
             ribbon = Ribbon.objects.get(recipe=recipe, user=request.user)
         except ObjectDoesNotExist:
             pass
 
-    recipe_form = RecipeForm(request.POST or None, prefix="re",
-                             instance=recipe)
-    ribbon_form = RibbonForm(request.POST or None, prefix="ri",
-                             instance=ribbon)
+    recipe_form = RecipeForm(
+            request.POST or None, prefix="re", instance=recipe)
+    ribbon_form = RibbonForm(
+            request.POST or None, prefix="ri", instance=ribbon)
 
     saved = False
     if recipe_form.is_valid() and ribbon_form.is_valid():
         recipe = recipe_form.save(commit=False)
-
-        '''
-        if recipe.link:
-            other = Recipe.objects.filter(link=recipe.link)
-            if other and other.id != recipe.id:
-                recipe = RecipeForm(
-                    request.POST, prefix="re", instance=other).save(
-                    commit=False)
-                    '''
-
         recipe.save()
         ribbon = ribbon_form.save(commit=False)
         ribbon.recipe = recipe
@@ -148,19 +146,20 @@ def _save_recipe(request, ctx, ribbon=None, recipe=None):
             ribbon.user = request.user
         ribbon.save()
 
-        if request.POST:
-            tags = json.loads(request.POST['tag-json'])
-            for key in tags:
-                for value in tags[key]:
-                    if value == '':
-                        value = None
-                    if tags[key][value].get('id', False):
-                        tag = Tag.objects.get(id=tags[key][value]['id'])
-                        if tags[key][value].get('deleted', False):
-                            tag.delete()
-                    elif not tags[key][value].get('deleted', False):
-                        Tag(ribbon=ribbon, key=key, value=value).save()
+        tags = json.loads(request.POST['tag-json'])
+        for key in tags:
+            for value in tags[key]:
+                if value == '':
+                    value = None
+                if tags[key][value].get('id'):  # update if possible
+                    tag = Tag.objects.get(id=tags[key][value]['id'])
+                    if tags[key][value].get('deleted', False):
+                        tag.delete()
+                elif not tags[key][value].get('deleted', False):  # create
+                    Tag(ribbon=ribbon, key=key, value=value).save()
         saved = True
+    elif recipe_form.errors or ribbon_form.errors:
+        tags = json.loads(request.POST['tag-json'])
     else:
         tags = {}
         if ribbon:
@@ -177,11 +176,13 @@ def _save_recipe(request, ctx, ribbon=None, recipe=None):
                     tags[actual_tag.key] = {}
                 tags[actual_tag.key][actual_tag.value] = {}
 
-    ctx['recipe_form'] = recipe_form
-    ctx['ribbon_form'] = ribbon_form
-    ctx['ribbon'] = ribbon
-    ctx['recipe'] = recipe
-    ctx['tags'] = tags
+    ctx.update({
+        'recipe_form': recipe_form,
+        'ribbon_form': ribbon_form,
+        'ribbon': ribbon,
+        'recipe': recipe,
+        'tags': tags,
+        })
 
     if request.method == 'GET':
         url = request.GET.get('url', None)
@@ -356,6 +357,7 @@ def recipe_box(request):
         'recipe').order_by('-time_created')
     return render_to_response('recipe_box.html', context_instance=ctx)
 
+
 @login_required(login_url="/accounts/login/")
 def action(request):
     if not request.method == 'POST':
@@ -403,6 +405,7 @@ def action(request):
 
     else:
         return JsonResponse({'status':'OK'})
+
 
 @login_required(login_url="/accounts/login/")
 def get_tag_category(request):
