@@ -7,7 +7,7 @@
 <h2>Search Recipes</h2>
 
 <div id="search-options" class="content-pane">
-  <form id="searchform" name="searchform" action="{% url fm.views.search_recipes %}" method="get">
+  <form id="searchform" name="searchform" action="{% url 'fm.views.search_recipes' %}" method="get">
     <input id="page" name="page" type="hidden" value="" />
 
     <div class="search-option">

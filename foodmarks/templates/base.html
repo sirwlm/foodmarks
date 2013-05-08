@@ -16,12 +16,12 @@
     <div class="wrapper">
       <div id="header-wrapper">
         <div id="header">
-          <h1><a href="{% url fm.views.index %}">foodmarks</a></h1>
+          <h1><a href="{% url 'fm.views.index' %}">foodmarks</a></h1>
           <div id="login">
             {% if user.is_authenticated %}
             <ul>
               <li>Welcome {{user.first_name}}!</li>
-              <li><a href="{% url accounts.views.preferences %}">Preferences</a></li>
+              <li><a href="{% url 'accounts.views.preferences' %}">Preferences</a></li>
               <li><a href="/accounts/logout/">Logout</a></li>
             </ul>
             {% else %}
@@ -39,11 +39,11 @@
         {% block nav %}
         <div id="nav">
           <ul>
-            <li><a href="{% url fm.views.add_recipe %}">Add Recipe</a></li>
-            <li><a href="{% url fm.views.search_recipes %}">Search Recipes</a></li>
-            <li><a href="{% url fm.views.recipe_box %}">Recipe Box</a></li>
+            <li><a href="{% url 'fm.views.add_recipe' %}">Add Recipe</a></li>
+            <li><a href="{% url 'fm.views.search_recipes' %}">Search Recipes</a></li>
+            <li><a href="{% url 'fm.views.recipe_box' %}">Recipe Box</a></li>
           </ul>
-          <form id="nav-searchform" name="nav-searchform" action="{% url fm.views.search_recipes %}" method="get">
+          <form id="nav-searchform" name="nav-searchform" action="{% url 'fm.views.search_recipes' %}" method="get">
             <label>Title Search:
               <input id="nav-search" name="q" type="text" />
             </label>
