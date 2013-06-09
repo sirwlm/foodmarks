@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -79,6 +81,7 @@ class Ribbon(models.Model):
 
     is_boxed = models.BooleanField(
             default=False, verbose_name="Include in your Recipe Box?")
+    boxed_on = models.DateTimeField(blank=True, null=True)
     is_used = models.BooleanField(
             default=False, verbose_name="Have you used this recipe?")
 

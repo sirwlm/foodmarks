@@ -1,3 +1,4 @@
+import datetime
 import json
 import math
 import operator
@@ -354,7 +355,7 @@ def recipe_box(request):
     ctx = RequestContext(request)
     ctx['ribbons'] = Ribbon.objects.filter(
         user=request.user, is_boxed=True).select_related(
-        'recipe').order_by('-time_created')
+        'recipe').order_by('-boxed_on', '-time_created')
     return render_to_response('recipe_box.html', context_instance=ctx)
 
 
@@ -395,6 +396,8 @@ def action(request):
             ribbon = Ribbon(recipe=recipe, user=request.user)
             copy_tags = request.user.get_profile().copy_tags
         ribbon.is_boxed = new_status
+        if ribbon.is_boxed:
+            ribbon.boxed_on = datetime.datetime.now()
         ribbon.save()
         if copy_tags:
             tags = Tag.objects.filter(ribbon__recipe=recipe)
