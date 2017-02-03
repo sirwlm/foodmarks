@@ -36,6 +36,8 @@ class JsonResponse(HttpResponse):
 
 
 def index(request):
+    if request.user.is_authenticated():
+        return redirect(reverse(search_recipes))
     ctx = RequestContext(request)
     ctx['recipes'] = Recipe.objects.order_by('-time_created')[0:PAGE_SIZE]
     return render_to_response('index.html', ctx)
