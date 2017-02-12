@@ -30,12 +30,12 @@
       <div id="tag-search-options" cellpadding="0" cellspacing="0">
         {% for row in search_tags %}
         <div class="search-option">
-    <h3>{{row.0|capfirst}}</h3>
-    <select multiple="multiple" class="chzn-select" name="tag" data-placeholder="Choose a {{row.0}}...">
-      {% for value in row.1 %}
-      <option {% if value.selected %}selected{% endif %} value="{{row.0}}:{{value.value}}">{{value.value}} ({{value.count}})</option>
-      {% endfor %}
-    </select>
+          <h3>{{row.0|capfirst}}</h3>
+          <select multiple="multiple" class="chzn-select" name="tag" data-placeholder="Choose a {{row.0}}...">
+            {% for value in row.1 %}
+            <option {% if value.selected %}selected{% endif %} value="{{row.0}}:{{value.value}}">{{value.value}} ({{value.count}})</option>
+            {% endfor %}
+          </select>
         </div>
         {% endfor %}
       </div>
