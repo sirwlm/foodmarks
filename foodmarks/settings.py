@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.flatpages',
     'south',
+    'crispy_forms',
     'accounts',
     'fm',
 )
@@ -157,6 +158,8 @@ LOGGING = {
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 LOGIN_REDIRECT_URL = '/search/'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 try:
     from settings_local import *

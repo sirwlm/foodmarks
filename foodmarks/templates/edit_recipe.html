@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}foodmarks: {% if add %}Add Recipe{% else %}Edit {{recipe.title}}{% endif %}{% endblock %}
 
@@ -13,8 +14,8 @@
   <input type="hidden" name="recipe-id" value="{{recipe_form.instance.id|default:''}}" />
   <div class="row">
     <div class="col">
-      {{recipe_form.as_p}}
-      {{ribbon_form.as_p}}
+      {{recipe_form|crispy}}
+      {{ribbon_form|crispy}}
       {% if user.is_staff %}
       <label>Add ribbon as:</label>
       <select name="user">

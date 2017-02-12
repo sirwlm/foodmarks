@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}Foodmarks: Login {% endblock %}
 
@@ -12,13 +13,8 @@
 
 <form action="./" method="post" name="mainform">
   {% csrf_token %}
-  <table style="padding:3px">
-    <tr><td>{{ form.username.label_tag }}</td><td>{{ form.username }}</td></tr>
-    <tr><td>{{ form.password.label_tag }}</td><td>{{ form.password }}</td></tr>
-  </table>
-
+  {{ form|crispy }}
   <input type="submit" value="Login" class="button" />
-  <input type="hidden" name="next" value="{{next}}" />
 </form>
 {% endspaceless %}
 {% endblock %}
