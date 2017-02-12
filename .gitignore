@@ -1,0 +1,10 @@
+*.pyc
+*~
+*.swp
+runsrv
+settings_local.py
+
+bin
+include
+lib
+local
