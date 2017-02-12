@@ -53,11 +53,11 @@
     {% if page != 'all' %}
     <div id="pagination">
       {% if page != 1 %}
-      <a href="#" page="{{page|add:'-1'}}">Prev</a>
+      <a href="#" page="{{page|add:'-1'}}">Prev</a>&nbsp;
       {% endif %}
       {% for p in page_range %}
-      {% if p == page %}<span>{{p}}</span>
-      {% else %}<a href="#" page="{{p}}">{{p}}</a>{% endif %}
+      {% if p == page %}<span>{{p}}</span>&nbsp;
+      {% else %}<a href="#" page="{{p}}">{{p}}</a>&nbsp;{% endif %}
       {% endfor %}
       {% if page != num_pages and num_pages != 0 %}
       <a href="#" page="{{page|add:'1'}}">Next</a>
@@ -67,10 +67,6 @@
   </div>
 </div>
 {% endspaceless %}
-{% endblock %}
-
-{% block css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.6.2/chosen.min.css" />
 {% endblock %}
 
 {% block js %}
