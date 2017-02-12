@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}{{ global_preferences.general__title }} | Search Recipes{% endblock %}
+
+{% block content %}
+{% spaceless %}
+<h2>Search Recipes</h2>
+
+<div class="row">
+  <div id="search-options" class="col-3">
+    <form id="searchform" name="searchform" action="{% url 'search_recipes' %}" method="get">
+      <input id="page" name="page" type="hidden" value="" />
+
+      <div class="search-option">
+        {% if own_ribbons %}
+        <span>Search My Bookmarks</span><br />
+        <a id="search-all" href="#">Search All Bookmarks</a>
+        {% else %}
+        <a id="search-my" href="#">Search My Bookmarks</a><br />
+        <span>Search All Bookmarks</span>
+        {% endif %}
+        <input id="search-all-input" name="all" type="checkbox" value="all" {% if not own_ribbons %}CHECKED{% endif %} style="display:none;" />
+      </div>
+
+      <div class="search-option">
+        <label for="query-string"><h3>Title Search</h3></label>
+        <input id="query-string" name="q" type="text" value="{{q}}" />
+      </div>
+
+      <div id="tag-search-options" cellpadding="0" cellspacing="0">
+        {% for row in search_tags %}
+        <div class="search-option">
+          <h3>{{row.0|capfirst}}</h3>
+          <select multiple="multiple" class="chzn-select" name="tag" data-placeholder="Choose a {{row.0}}...">
+            {% for value in row.1 %}
+            <option {% if value.selected %}selected{% endif %} value="{{row.0}}:{{value.value}}">{{value.value}} ({{value.count}})</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% endfor %}
+      </div>
+      <input type="submit" value="Search" />
+    </form>
+  </div>
+
+  <div id="search-results" class="col-9">
+    {% if own_ribbons %}
+    {% include "ribbons.html" with empty_template="includes/empty_ribbon_search.html"  %}
+    {% else %}
+    {% include "recipe_list.html" with empty_template="includes/empty_recipe_search.html" %}
+    {% endif %}
+
+    {% if page != 'all' %}
+    <div id="pagination">
+      {% if page != 1 %}
+      <a href="#" page="{{page|add:'-1'}}">Prev</a>&nbsp;
+      {% endif %}
+      {% for p in page_range %}
+      {% if p == page %}<span>{{p}}</span>&nbsp;
+      {% else %}<a href="#" page="{{p}}">{{p}}</a>&nbsp;{% endif %}
+      {% endfor %}
+      {% if page != num_pages and num_pages != 0 %}
+      <a href="#" page="{{page|add:'1'}}">Next</a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endspaceless %}
+{% endblock %}
+
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.6.2/chosen.jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+  $(".chzn-select").chosen().change(function(){
+  $('#page').val('');
+  $('#searchform').submit();
+  return false;
+  });
+
+  $('#search-all').click(function(){
+  $('#search-all-input').prop('checked', true);
+  $('#page').val('');
+  $('#searchform').submit();
+  return false;
+  });
+
+  $('#search-my').click(function(){
+  $('#search-all-input').prop('checked', false);
+  $('#page').val('');
+  $('#searchform').submit();
+  return false;
+  });
+
+  $('#pagination a').click(function(){
+  $('#page').val($(this).attr('page'));
+  $('#searchform').submit();
+  return false;
+  });
+
+  });
+</script>
+{% endblock %}

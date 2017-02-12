@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}{{ global_preferences.general__title }} | {{recipe}}{% endblock %}
+
+{% block content %}
+{% spaceless %}
+{% if recipe.link %}
+<a href="{{recipe.link}}" target="_blank"><h2>{{recipe}}</h2></a>
+{% else %}
+<h2>{{recipe}}</h2>
+{% endif %}
+<div class="row">
+  <div class="col">
+    {% if recipe.servings %}
+    <p><strong>Servings</strong> {{recipe.servings}}</p>
+    {% endif %}
+    {% if recipe.description %}
+    <strong>Description</strong>{{recipe.description|linebreaks}}
+    {% endif %}
+    {% if recipe.ingredients %}
+    <strong>Ingredients</strong>{{recipe.ingredients|linebreaks}}
+    {% endif %}
+    {% if recipe.directions %}
+    <strong>Directions</strong>{{recipe.directions|linebreaks}}
+    {% endif %}
+
+    {% if ribbon %}
+    {% if ribbon.comments %}
+    <strong>Comments</strong>{{ribbon.comments|linebreaks}}
+    {% endif %}
+    <strong>My Tags</strong>
+    {% include "includes/tag_table.html" with tags=my_tags %}
+    {% endif %}
+
+    {% if other_ribbons %}
+    <strong>Other Comments</strong>
+    <ul>
+      {% for ribbon in other_ribbons %}
+      {% if ribbon.comments %}
+      <li><strong>{{ribbon.user}}:</strong> {{ribbon.comments}}</li>
+      {% endif %}
+      {% endfor %}
+    </ul> <br />
+
+    {% if other_tags %}
+    <strong>Other Tags</strong>
+    {% include "includes/tag_table.html" with tags=other_tags %}
+    {% endif %}
+
+    {% endif %}
+  </div>
+  <div class="col">
+    <strong>Stats</strong><br />
+    <ul>
+      <li>{{recipe.ribbon_set.all|length}} bookmarks</li>
+      <li>{{recipe.get_used_count}} used it</li>
+      <li>{{recipe.get_thumbs_up_count}} gave it a thumbs up</li>
+      <li>{{recipe.get_thumbs_down_count}} gave it a thumbs down</li>
+    </ul>
+    <br />
+    <strong>Bookmarked by</strong><br />
+    <ul>
+      {% for cur_ribbon in recipe.ribbon_set.all %}
+      <li>{{cur_ribbon.user}}{% if cur_ribbon.is_boxed %} (Boxed){% endif %}{% if cur_ribbon.is_used %} (Used){% endif %}{{ cur_ribbon.thumb|yesno:' (Thumbs up), (Thumbs down),'}}</li>
+      {% endfor %}
+    </ul>
+    <br />
+    <strong>Actions</strong><br />
+    <ul class="actions">
+      {% if ribbon %}
+      <li><a class="add-to-box {% if ribbon.is_boxed %}hide{% endif %}" href="#">Add To Recipe Box</a><a class="remove-from-box {% if not ribbon.is_boxed %}hide{% endif %}" href="#">Remove From Recipe Box</a></li>
+      <li><a class="edit" href="{% url 'edit_recipe' ribbon.id %}">Edit</a></li>
+      <li><a class="delete-ribbon" href="#">Delete Ribbon</a></li>
+      <li>
+        <input type="hidden" class="recipe-id" value="{{recipe.id}}" />
+        <input type="hidden" class="ribbon-id" value="{{ribbon.id}}" />
+      </li>
+      {% else %}
+      <li><a href="{% url 'add_recipe' %}?recipe={{recipe.id}}">Bookmark this recipe</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
+{% endspaceless %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% spaceless %}
+<table class="table recipe-list listings">
+  {% for recipe in recipes %}
+  <tr class="recipe-listing listing">
+    <td class="data">
+      {% if recipe.link %}
+      <a class="title" href="{{recipe.link}}" target="_blank" title="{{recipe}}">{{recipe}}</a> <br />
+      <small><a class="small-link" href="{% url 'view_recipe' recipe.id %}">View on foodmarks</a></small>
+      {% else %}
+      <a href="{% url 'view_recipe' recipe.id %}">{{recipe}}</a>
+      {% endif %}
+      <br />
+      <small>Bookmarked on {{recipe.time_created|date:"d M y"}}</small>
+    </td>
+  </tr>
+  {% empty %}
+  {% if empty_template %}
+  {% include empty_template %}
+  {% endif %}
+  {% endfor %}
+</table>
+{% endspaceless %}

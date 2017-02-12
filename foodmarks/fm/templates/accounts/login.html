@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ global_preferences.general__title }} | Login{% endblock %}
+
+{% block content %}
+{% spaceless %}
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+<h3>Login to Foodmarks</h3>
+
+<form action="./" method="post" name="mainform">
+  {% csrf_token %}
+  {{ form|crispy }}
+  <input type="submit" value="Login" class="button" />
+</form>
+{% endspaceless %}
+{% endblock %}

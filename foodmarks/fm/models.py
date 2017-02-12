@@ -15,6 +15,7 @@ class Recipe(models.Model):
 
     time_created = models.DateTimeField(auto_now_add=True)
 
+
     def get_tag_dict(self, user=None, dedup=True):
         if user is not None:
             try:

@@ -1,0 +1,10 @@
+<table class="tag-table">
+  {% for key, values in tags.items %}
+  <tr><td class="key">{{key}}</td>
+    <td>{% for value in values %}
+    <span class="badge badge-default tag-value" title="{{value}}">{{value}}</span>
+    {% endfor %}</td>
+  </tr>
+  {% endfor %}
+</table>
+

@@ -1,0 +1,17 @@
+.hide {
+    display: none;!important
+}
+.rss-small {
+    display:inline-block;
+    *display: inline;
+    zoom: 1;
+    background: url("/static/images/feed-icon-14x14.png");
+    height: 14px;
+    width: 14px;
+}
+.tag-remove {
+    cursor: pointer;
+    background: #000000;
+    color: #ffffff;
+    margin-left: 5px;
+}

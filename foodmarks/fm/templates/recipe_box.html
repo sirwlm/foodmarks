@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}{{ global_preferences.general__title }} | Recipe Box{% endblock %}
+
+{% block content %}
+{% spaceless %}
+<h2>Recipe Box</h2>
+{% include "ribbons.html" with empty_template="includes/empty_recipe_box.html" %}
+{% endspaceless %}
+{% endblock %}
