@@ -1,12 +1,21 @@
 from django import forms
 from django.forms import ModelForm
 
-from foodmarks.fm.models import *
+from models import *
 
 class RecipeForm(ModelForm):
 
     class Meta:
         model = Recipe
+
+        fields = (
+            'title',
+            'link',
+            'servings',
+            'description',
+            'ingredients',
+            'directions',
+        )
 
         widgets = {
                 'title': forms.TextInput(attrs={'size': '50'}),

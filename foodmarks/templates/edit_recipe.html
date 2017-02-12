@@ -5,7 +5,7 @@
 
 {% block content %}
 {% spaceless %}
-{% if not hide_page_header %}<h2>{% if add %}Add Recipe{% else %}Edit <a href="{% url 'fm.views.view_recipe' recipe.id %}">{{recipe.title}}</a>{% endif %}</h2>{% endif %}
+{% if not hide_page_header %}<h2>{% if add %}Add Recipe{% else %}Edit <a href="{% url 'view_recipe' recipe.id %}">{{recipe.title}}</a>{% endif %}</h2>{% endif %}
 <p>{{message}}</p>
 <form id="mainform" name="mainform" action="./" method="post">
   {% csrf_token %}

@@ -26,17 +26,17 @@
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'fm.views.add_recipe' %}">Add Recipe</a>
+            <a class="nav-link" href="{% url 'add_recipe' %}">Add Recipe</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'fm.views.search_recipes' %}">Search Recipes</a>
+            <a class="nav-link" href="{% url 'search_recipes' %}">Search Recipes</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'fm.views.recipe_box' %}">Recipe Box</a>
+            <a class="nav-link" href="{% url 'recipe_box' %}">Recipe Box</a>
           </li>
           {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'accounts.views.preferences' %}">Preferences</a>
+            <a class="nav-link" href="{% url 'preferences' %}">Preferences</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/accounts/logout/">Logout</a>
@@ -47,7 +47,7 @@
           </li>
           {% endif %}
         </ul>
-        <form id="nav-searchform" name="nav-searchform" action="{% url 'fm.views.search_recipes' %}" method="get" class="form-inline mt-2 mt-md-0">
+        <form id="nav-searchform" name="nav-searchform" action="{% url 'search_recipes' %}" method="get" class="form-inline mt-2 mt-md-0">
           <input id="nav-search" name="q" class="form-control mr-sm-2" type="text" placeholder="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>

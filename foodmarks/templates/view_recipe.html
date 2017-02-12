@@ -69,14 +69,14 @@
     <ul class="actions">
       {% if ribbon %}
       <li><a class="add-to-box {% if ribbon.is_boxed %}hide{% endif %}" href="#">Add To Recipe Box</a><a class="remove-from-box {% if not ribbon.is_boxed %}hide{% endif %}" href="#">Remove From Recipe Box</a></li>
-      <li><a class="edit" href="{% url 'fm.views.edit_recipe' ribbon.id %}">Edit</a></li>
+      <li><a class="edit" href="{% url 'edit_recipe' ribbon.id %}">Edit</a></li>
       <li><a class="delete-ribbon" href="#">Delete Ribbon</a></li>
       <li>
         <input type="hidden" class="recipe-id" value="{{recipe.id}}" />
         <input type="hidden" class="ribbon-id" value="{{ribbon.id}}" />
       </li>
       {% else %}
-      <li><a href="{% url 'fm.views.add_recipe' %}?recipe={{recipe.id}}">Bookmark this recipe</a></li>
+      <li><a href="{% url 'add_recipe' %}?recipe={{recipe.id}}">Bookmark this recipe</a></li>
       {% endif %}
     </ul>
   </div>

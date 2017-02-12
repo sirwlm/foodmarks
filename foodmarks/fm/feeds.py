@@ -3,8 +3,9 @@ import datetime
 from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
-from foodmarks.fm.models import Recipe
-from foodmarks.fm.views import view_recipe
+
+from models import Recipe
+from views import view_recipe
 
 class NewestRecipesFeed(Feed):
     title = 'foodmarks Newest Recipes'
@@ -23,11 +24,11 @@ class NewestRecipesFeed(Feed):
         if item.link:
             return item.link
         else:
-            return reverse('fm.views.view_recipe', args=[int(item.id)])
+            return reverse('view_recipe', args=[int(item.id)])
 
     def item_description(self, item):
         if item.link:
             return mark_safe(
                 '<a href="{0}">View on foodmarks</a>'.format(
-                    reverse('fm.views.view_recipe', args=[int(item.id)])))
+                    reverse('view_recipe', args=[int(item.id)])))
         return ''
