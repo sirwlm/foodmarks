@@ -47,6 +47,7 @@ def index(request):
 def bookmarklet(request):
     ctx = RequestContext(request)
     ctx['add'] = True
+    ctx['hide_page_header'] = True
 
     saved = _save_recipe(request, ctx)
 

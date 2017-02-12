@@ -1,42 +1,38 @@
 {% spaceless %}
-<ul class="ribbon-list listings">
+<table class="table recipe-list listings">
   {% for ribbon in ribbons %}{% with recipe=ribbon.recipe %}
-  <li class="ribbon-listing listing">
-  <div class="date">
-    <span>{{ribbon.time_created|date:"d M y"}}</span>
-  </div>
-  {% comment %}<div class="picture"></div>{% endcomment %}
-  <div class="data">
-    <span>
+  <tr class="ribbon-listing listing">
+    <td class="data">
       {% if recipe.link %}
       <a class="title" href="{{recipe.link}}" target="_blank" title="{{recipe}}">{{recipe}}</a>
       {% else %}
       <a href="{% url 'fm.views.view_recipe' recipe.id %}">{{recipe}}</a>
       {% endif %}
-    </span>
-  </div>
-  <div class="total">{{recipe.ribbon_set.count}}</div>
-  <div class="meta">
-    <div class="actions">
-      <input type="hidden" class="recipe-id" value="{{recipe.id}}" />
-      <input type="hidden" class="ribbon-id" value="{{ribbon.id}}" />
-      <span><a class="add-to-box {% if ribbon.is_boxed %}hide{% endif %}" href="#">Add To Recipe Box</a><a class="remove-from-box {% if not ribbon.is_boxed %}hide{% endif %}" href="#">Remove From Recipe Box</a></span> |
-      <span><a class="edit" href="{% url 'fm.views.edit_recipe' ribbon.id %}">Edit</a></span> |
-      <span><a class="delete-ribbon" href="#">Delete</a></span>
-      {% if recipe.link %} | <span><a href="{% url 'fm.views.view_recipe' recipe.id %}">View on foodmarks</a></span>{% endif %}
-    </div>
-    <div class="tags">
-      {% for tag in ribbon.tag_set.all %}
-      <span class="tag"><a href="{% url 'fm.views.search_recipes' %}?tag={{tag.key}}:{{tag.value}}" >{{tag}}</a></span>
-      {% endfor %}
-    </div>
-  </div>
-  </li>
+      <br />
+      <div class="actions">
+        <input type="hidden" class="recipe-id" value="{{recipe.id}}" />
+        <input type="hidden" class="ribbon-id" value="{{ribbon.id}}" />
+        <small>
+          <a class="add-to-box {% if ribbon.is_boxed %}hide{% endif %}" href="#">Add To Recipe Box</a>
+          <a class="remove-from-box {% if not ribbon.is_boxed %}hide{% endif %}" href="#">Remove From Recipe Box</a>&nbsp;|&nbsp;
+          <a class="edit" href="{% url 'fm.views.edit_recipe' ribbon.id %}">Edit</a>&nbsp;|&nbsp;
+          <a class="delete-ribbon" href="#">Delete</a>
+          {% if recipe.link %}&nbsp;|&nbsp;<a href="{% url 'fm.views.view_recipe' recipe.id %}">View on foodmarks</a>{% endif %}
+          {{ribbon.time_created|date:"d M y"}}
+        </small>
+      </div>
+      <div class="tags">
+        {% for tag in ribbon.tag_set.all %}
+        <a href="{% url 'fm.views.search_recipes' %}?tag={{tag.key}}:{{tag.value}}" ><span class="badge badge-default">{{tag.value}}</span></a>&nbsp;
+        {% endfor %}
+      </div>
+    </td>
+  </tr>
   {% endwith %}
   {% empty %}
   {% if empty_template %}
   {% include empty_template %}
   {% endif %}
   {% endfor %}
-</ul>
+</table>
 {% endspaceless %}
